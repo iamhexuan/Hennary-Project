@@ -1,0 +1,31 @@
+{
+  "name": "hen-project",
+  "description": "first game project from the Hennery",
+  "version": "1.0.0",
+  "author": "the Hennery Production",
+  "private": true,
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development webpack-dev-server --open --hot",
+    "build": "cross-env NODE_ENV=production webpack --config webpack.production.config.js --progress --hide-modules"
+  },
+  "dependencies": {
+    "phaser-ce": "^2.8.5"
+  },
+  "devDependencies": {
+    "babel-core": "^6.0.0",
+    "babel-eslint": "^7.2.1",
+    "babel-loader": "^6.0.0",
+    "babel-polyfill": "^6.23.0",
+    "babel-preset-latest": "^6.0.0",
+    "cross-env": "^3.0.0",
+    "eslint": "^3.19.0",
+    "eslint-loader": "^1.7.1",
+    "eslint-config-standard": "^7.1.0",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-standard": "^2.1.1",
+    "expose-loader": "^0.7.3",
+    "webpack": "^2.2.0",
+    "webpack-dev-server": "^2.2.0",
+    "webpack-merge": "^4.1.0"
+  }
+}
