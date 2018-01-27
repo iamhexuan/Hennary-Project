@@ -30,16 +30,22 @@ export default class Play extends Phaser.State {
 		game.time.events.loop(Phaser.Timer.SECOND, this.updateCounter, this);
 		
 		// TODO draw sprites
-		this.addImage()
+		this.items = []
+		this.addImage(this.items)
 	}
 	
-	addImage() {
+	addImage(items = []) {
 		var item;
 		var test = game.add.group();
 		
 		for (var i = 0; i < 10; i++) {
 			var imageName = 'human_' + (i + 1) + '.png';
 			var item = test.create(90 * (1 + i%2), 90 * (1 + Math.floor(i/2)), imageName);
+			item.init_x = item.x
+			item.init_y = item.y
+
+			items.push(item)
+			//console.log(items)
 
 			// Enable input detection, then it's possible be dragged.
 			item.inputEnabled = true;
@@ -51,23 +57,15 @@ export default class Play extends Phaser.State {
 			// also we make it only snap when released.
 			item.input.enableSnap(90, 90, false, true);
 
-			// Limit drop location to only the 2 columns.
-			item.events.onDragStop.add(this.fixLocation);
+			// Limit drop location
+			item.events.onDragStop.add(this.updateSignalStrength);
 		}
 	}
 	
-	fixLocation(item) {
-		// Move the items when it is already dropped.
-		if (item.x < 90) {
-			item.x = 90;
-		}
-		else if (item.x > 180 && item.x < 270) {
-			item.x = 180;
-		}
-		else if (item.x > 360) {
-			item.x = 270;
-		}
-
+	updateSignalStrength(item) {
+		// TODO revert action when dropped at invalid position
+		// TODO update signal strength for all tiles
+		console.log('item.x', item.x, 'item.y', item.y, 'item.init_x', item.init_x, 'item.init_y', item.init_y)
 	}
 
 	updateCounter() {
