@@ -63,7 +63,7 @@ export default class Tile {
                         this.second_round_emitters.push(emitter)
                     }else{
                         for (let row = 0; row < rows; row++){
-                            for (let col = 0; col < cols: col++){
+                            for (let col = 0; col < cols; col++){
                                 
                                 // tile VS emitter
                                 let tile = this.getTileAtPosition({
@@ -74,7 +74,7 @@ export default class Tile {
                                 
                                 const newSingleStrength = (() => {
                                     
-                                }())
+                                })
                                 
                                 if (idx === 0){
                                     // this should reset the 'signalStrength'
@@ -105,7 +105,7 @@ export default class Tile {
                 if (tile.row === row && tile.col === col) return tile
             })
             return null
-        },
+        };
         
         // @return { Number } decayed number of signal
         decaySingal({
