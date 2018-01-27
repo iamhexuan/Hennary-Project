@@ -54,15 +54,26 @@ export default class Play extends Phaser.State {
 		console.log(l.cash)
 		
 		// TODO draw sprites
-		this.addImages(l.humans);
+		this.addImageGroup(l.humans);
+		
+		var deviceImgs = [];
+		var deviceNums = [];
+		for (var i = 0; i < l.deviceStock.length; i++) {
+			var img = l.deviceStock[i][0];
+			var num = l.deviceStock[i][1];
+			img.setPosition(4, i);
+			deviceImgs.push(img);
+			deviceNums.push(num);
+		}
+		this.addImageGroup(deviceImgs, true);
+		
+		this.groupTop = game.add.group();
+		game.world.bringToTop(this.groupTop);
 	}
 	
-	addImages(array, container = []) {
+	addImageGroup(array, enableDrag = false, container = []) {
 		var imageName, item;
 		var group = game.add.group();
-		var group_top = game.add.group();
-		
-		game.world.bringToTop(group_top);
 		
 		for (var i = 0; i < array.length; i++) {
 			var obj = array[i];
@@ -73,23 +84,23 @@ export default class Play extends Phaser.State {
 
 			container.push(item);
 
-			// Enable input detection, then it's possible be dragged.
-			item.inputEnabled = true;
-
-			// Make this item draggable.
-			item.input.enableDrag();
-			
-			// Then we make it snap to left and right side,
-			// also we make it only snap when released.
-			item.input.enableSnap(size, size, false, true);
-
-			item.events.onDragStart.add(item => group_top.add(item));
-			// Limit drop location
-			item.events.onDragStop.add(item => {
-				group_top.removeAll();
-				group.add(item);
-				this.updateSignalStrength(item,container);
-			});
+			if (enableDrag) {
+				// Enable input detection, then it's possible be dragged.
+				item.inputEnabled = true;
+				// Make this item draggable.
+				item.input.enableDrag();			
+				// Then we make it snap to left and right side,
+				// also we make it only snap when released.
+				item.input.enableSnap(size, size, false, true);	
+				// use group to handle zIndex
+				item.events.onDragStart.add(item => this.groupTop.add(item));
+				// Limit drop location
+				item.events.onDragStop.add(item => {
+					this.groupTop.removeAll();
+					group.add(item);
+					this.updateSignalStrength(item,container);
+				});
+			}
 		}
 	}
 	
