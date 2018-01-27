@@ -66,7 +66,7 @@ export default class Tile {
                         let tileswithNewSingleStrength = [] 
                         
                         for (let row = 0; row < rows; row++){
-                            for (let col = 0; col < cols: col++){
+                            for (let col = 0; col < cols; col++){
                                 
                                 // tile VS emitter
                                 let tile = this.getTileAtPosition({
@@ -75,11 +75,21 @@ export default class Tile {
                                     col: col,
                                 })
                                 
-                                distance = 
+                                const rawSignalStrength = emitter.strength
                                 
-                                tileswithNewSingleStrength.push({
-                                    
+                                const tile_range = [[tile.row - 0.5, tile.row + 0.5], [tile.col - 0.5, tile.col + 0.5]]
+                                
+                                // @return [ permeability * length ]
+                                const blocker_permeabilities = this.getBlockersPermeabilityOfATileFromAEmitter({
+                                    tiles: tiles,
+                                    emitter: emitter,
+                                    row: row,
+                                    col: col,
                                 })
+                                
+                                
+                                console.log('blocker_permeabilities', row, col, blocker_permeabilities)
+                                // tileswithNewSingleStrength.push()
                                                                          
                             }                        
                         }
@@ -90,13 +100,160 @@ export default class Tile {
                         }
                     }
                 })
-              
-            
-                     
-                this.updateA()
+                                   
             })
             
         }
+        
+        // @return { Array } - array of numbers between 0 and 1.
+        getBlockersPermeabilityOfATileFromAEmitter({
+            emitter = {},
+            tiles = [],
+            row = 0, // of tile
+            col = 0, // of tile
+        } = {}){
+
+            // invalid case, should not happen
+            if (emitter.row - row === 0 && emitter.col - col === 0){
+                return []
+            }
+            
+            // y = grad * x + offset
+            // row = grad * col + offset
+            if (emitter.row - row !== 0 && emitter.col - col !== 0){
+                const grad = (emitter.row - row) / (emitter.col - col)
+                const offset = emitter.row - emitter.col * grad
+                
+                // [start, end]
+                const row_range = [emitter.row, row].sort((a,b) => a - b)
+                const col_range = [emitter.col, col].sort((a,b) => a - b)
+                
+                let _blockers_perm = [] // [ permeability / percentage ]
+                
+                for (let _row = row_range[0]; _row <= row_range[1]; _row++;){
+                    
+                    const row_bounds = [_row - 0.5, _row + 0.5]
+                    
+                    const row_intercepts_at_cols = row_bounds.map(_r => (_r - offset) / grad).sort((a,b) => a - b)
+                    
+                    for (let _col = col_range[0]; _col <= col_range[1]; _col++;){
+                        
+                        const _tile = this.getTileAtPosition({
+                            tiles : tiles,
+                            row : _row,
+                            col : _col,
+                        })
+                        
+                        const tile_permeability = _tile.permeability !== 'undefined' ? _tile.permeability : 1
+                        
+                        if (tile_permeability === 1) break; // no need do extra calculation
+                                                                                                                        
+                        const col_bounds = [_col - 0.5, _col + 0.5]
+                        
+                        const is_total_miss = (
+                            col_bounds[1] < row_intercepts_at_cols[0] || 
+                            col_bounds[1] > row_intercepts_at_cols[0]
+                        )
+                        
+                        if (is_total_miss) break; // no need do extra calculation 
+                        
+                        const is_complete_pass = 
+                            (
+                                col_bounds[0] <= row_intercepts_at_cols[0] && 
+                                col_bounds[1] >= row_intercepts_at_cols[1]
+                            ) || (
+                                col_bounds[0] >= row_intercepts_at_cols[0] && 
+                                col_bounds[1] <= row_intercepts_at_cols[1]
+                            )
+                            
+                        if (is_complete_pass){
+                            _blockers.push(tile_permeability)
+                        }else{
+                            let col_intercepts_at_rows = col_bounds
+                                .map(_c => grad * _c + offset).sort((a,b) => a - b)
+                                
+                            const vert_distance = col_intercepts_at_rows[1] - col_intercepts_at_rows[0]
+                            
+                            let length = Math.sqrt(vert_distance * vert_distance + 1)
+                            
+                            // get the actual vertical distance
+                            
+                            let _row_inside_col_intercept = row_bounds
+                                 .filter(_r => _r > col_intercepts_at_rows[0] && _r < col_intercepts_at_rows[1])
+                            
+                            if (_row_inside_col_intercept.length > 0){
+                               _row_inside_col_intercept = _row_inside_col_intercept[0] 
+                            }else{
+                                break; // should not happen
+                            }
+                            
+                            let _col_intercept_inside_row_bounds = col_intercepts_at_rows
+                                 .filter(_r => _r > row_bounds[0] && _r < row_bounds[1])
+                            
+                            if (_col_intercept_inside_row_bounds.length > 0){
+                               _col_intercept_inside_row_bounds = _col_intercept_inside_row_bounds[0] 
+                            }else{
+                                break; // should not happen
+                            }
+                            
+                           length = Math.abs(_col_intercept_inside_row_bounds - _row_inside_col_intercept) * length
+                            
+                           if (length > 1) length = 1
+                           if (length > 0) _blockers.push(tile_permeability / length)                         
+                        }
+                    }
+                }
+                                                        
+                return _blockers
+                
+            }
+            
+            // y = y_val
+            if(emitter.row - row !== 0 && emitter.col === 0){
+                const _col = emitter.col 
+                const row_bound = [emitter.row, row].sort((a,b) => a - b)
+                let _blockers = []
+                for (let _row = row_bound[0]; _row <= row_bound[1]; row++){
+                    const _tile = this.getTileAtPosition({
+                        tiles : tiles,
+                        row : _row,
+                        col : _col,
+                    })
+                    if (_row !== emitter.row && _col !== emitter.col){
+                        _blockers.push(tile)
+                    }
+                }
+                return _blockers
+                    .map(_blk_tile => _blk_tile.permeability)
+                    .filter(pm => typeof pm === 'number' && !Number.isNaN(pm) && pm !== 1)
+            }                                       
+                
+            // x = x_val    
+            if (emitter.row - row === 0 && emitter.col !== 0){
+                const _row = emitter.row
+                const col_bound = [emitter.col, col].sort((a,b) => a - b)
+                let _blockers = []
+                
+                for (let _col = col_bound[0]; _col <= col_bound[1]; col++){
+                    const _tile = this.getTileAtPosition({
+                        tiles : tiles,
+                        row : _row,
+                        col : _col,
+                    })
+                    if (_row !== emitter.row && _col !== emitter.col){
+                        _blockers.push(tile)
+                    }
+                }
+                return _blockers
+                    .map(_blk_tile => _blk_tile.permeability)
+                    .filter(pm => typeof pm === 'number' && !Number.isNaN(pm) && pm !== 1)
+            }                                    
+            
+        }
+        
+        
+        
+        
         
         // @return { Object } - that tile. If empty, return null
         getTileAtPosition({
@@ -108,10 +265,10 @@ export default class Tile {
                 if (tile.row === row && tile.col === col) return tile
             })
             return null
-        },
+        }
         
         // @return { Number } decayed number of signal
-        decaySingal({
+        calcDecaySingal({
             rawSignalValue = 0,
             distance = 0,
             coefficient = 0.2,
@@ -128,7 +285,7 @@ export default class Tile {
                 }, 1)
             ) : 1
             
-            return rawSignalValue * coefficient / ()
+            return rawSignalValue * coefficient / (distance * distance) * agg_perm
             
         }
         
