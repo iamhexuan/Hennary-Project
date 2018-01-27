@@ -45,8 +45,8 @@ export default class Tile {
         
         let _tiles = []
         
-        for (let r = 0; r < canvas.row; r++;){
-            for (let c = 0; c < canvas.col; c++;){
+        for (let r = 0; r < canvas.row; r++){
+            for (let c = 0; c < canvas.col; c++){
                 _tiles.push({
                     row: r,
                     col: c,
