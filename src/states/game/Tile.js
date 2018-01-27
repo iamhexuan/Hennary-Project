@@ -5,7 +5,8 @@ export default class Tile {
         type = '', 
         permeability = 1, 
         signalStrength = 0,
-        id = ''
+        isSocketable = false,
+        id = '',
     } = {}) {
         this.row = row;
         this.col = col;
@@ -13,6 +14,9 @@ export default class Tile {
         this.permeability = permeability;
         this.id = id;
         this.signalStrength = signalStrength;
+        this.isSocketable = isSocketable;
+        this.isAccessible = type === 'floor';
+        this.visible = type !== 'empty';
     }
     
     // for test only 
