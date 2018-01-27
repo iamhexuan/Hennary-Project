@@ -4,7 +4,7 @@ import Level from './game/Level'
 import Person from './game/Person'
 import Tile from './game/Tile'
 
-var size = 75, edge = 8;
+var size = 75, edge = 0;
 
 export default class Play extends Phaser.State {
 
@@ -57,8 +57,11 @@ export default class Play extends Phaser.State {
 
 		// TODO init level
 		var l = new Level({levelNumber: 1})
-		l.addCash(5)
+		//l.addCash(5)
 		console.log(l.cash)
+		
+		edge = 11
+		console.log('edge', edge);
 		
 		// TODO draw sprites
 		this.addImageGroup(l.tiles)
@@ -79,13 +82,13 @@ export default class Play extends Phaser.State {
 				this.deviceText.push(null);
 			}
 			
-			img.setPosition(edge, i + offset);
+			img.setPosition(i + offset + 0.1, edge);
 			for (var j = 0; j < num; j++) {
 				deviceImgs.push(img);	
 			}
 			deviceImgsLocked.push(img);
 
-			var text = game.add.text(size * (img.row + 1), size * (img.col + 0.5), 'x ' + num, { font: "32px Arial", fill: "#ffffff", align: "left" });
+			var text = game.add.text(size * (img.col + 1), size * (img.row + 0.5), 'x ' + num, { font: "32px Arial", fill: "#ffffff", align: "left" });
 			this.deviceText.push(text)
 			//this.text.anchor.setTo(0.5, 0.5);
 		}
