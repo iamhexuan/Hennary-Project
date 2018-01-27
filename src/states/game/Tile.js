@@ -122,6 +122,7 @@ export default class Tile {
         emitters = [],
         resolveSimplifiedObject = false,
         overwriteSourceTiles = false,
+        updateTileClass = true,
     } = {}){
         const tile_size = !!canvas.tileSize ? canvas.tileSize : 0   
         const rows = !!canvas.rows ? canvas.rows : 0
@@ -190,11 +191,12 @@ export default class Tile {
             
             let updatedTiles
             
-            if (!resolveSimplifiedObject || overwriteSourceTiles){
+            if (!resolveSimplifiedObject || overwriteSourceTiles || updateTileClass){
                 updatedTiles = this.injectNewSignalStrengthToTiles({
                     sourceTiles: tiles, // This will overwrite sourceTile
                     newData: updatedTileSingalStrength,
                     overwriteSourceTiles: overwriteSourceTiles,
+                    updateTileClass: updateTileClass,
                 })
             }
             
@@ -422,6 +424,7 @@ export default class Tile {
         sourceTiles = [],
         newData = {}, // { row: { col: singleStrength }, row: { col: singleStrength } }
         overwriteSourceTiles = false,
+        updateTileClass = false,
     } = {}){
         let return_tiles = []
         if (!Array.isArray(sourceTiles)) return []
@@ -432,6 +435,9 @@ export default class Tile {
                 tiles[idx].signalStrength = new_signal_stren
             }
             return_tiles.push( Object.assign({}, tile, { 'signalStrength': new_signal_stren }) )
+            if (updateTileClass){
+                this.signalStrength = new_signal_stren
+            }
         })
         
         return return_tiles
