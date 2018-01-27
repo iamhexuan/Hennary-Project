@@ -2,6 +2,16 @@ import Phaser from 'phaser'
 
 export default class Play extends Phaser.State {
 
+	preload() {
+		var imagePath, imageName;
+		for (var i = 0; i < 10; i++) {
+			imagePath = 'assets/images/human/';
+			imageName = 'human_' + (i + 1) + '.png';
+			console.log(imagePath + imageName)
+			game.load.image(imageName, imagePath + imageName, 65, 75);
+		}
+	}
+
 	create() {
 		this.counter = 0;
 		this.text = 0;
@@ -18,6 +28,46 @@ export default class Play extends Phaser.State {
 		//  The next two parameters are the function to call ('updateCounter') and the context under which that will happen.
 
 		game.time.events.loop(Phaser.Timer.SECOND, this.updateCounter, this);
+		
+		// TODO draw sprites
+		this.addImage()
+	}
+	
+	addImage() {
+		var item;
+		var test = game.add.group();
+		
+		for (var i = 0; i < 10; i++) {
+			var imageName = 'human_' + (i + 1) + '.png';
+			var item = test.create(90 * (1 + i%2), 90 * (1 + Math.floor(i/2)), imageName);
+
+			// Enable input detection, then it's possible be dragged.
+			item.inputEnabled = true;
+
+			// Make this item draggable.
+			item.input.enableDrag();
+			
+			// Then we make it snap to left and right side,
+			// also we make it only snap when released.
+			item.input.enableSnap(90, 90, false, true);
+
+			// Limit drop location to only the 2 columns.
+			item.events.onDragStop.add(this.fixLocation);
+		}
+	}
+	
+	fixLocation(item) {
+		// Move the items when it is already dropped.
+		if (item.x < 90) {
+			item.x = 90;
+		}
+		else if (item.x > 180 && item.x < 270) {
+			item.x = 180;
+		}
+		else if (item.x > 360) {
+			item.x = 270;
+		}
+
 	}
 
 	updateCounter() {
