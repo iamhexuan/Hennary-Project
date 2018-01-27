@@ -95,7 +95,7 @@ export default class Tile {
         })
         if (!tile) return 0
         return (!!tile.signalStrength) ? tile.signalStrength : 0
-    },
+    }
     
     // @param { Array } tiles of tile
     
