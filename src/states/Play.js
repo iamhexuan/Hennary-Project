@@ -66,7 +66,6 @@ export default class Play extends Phaser.State {
 		
 		// text
 		this.deviceText = [];
-		this.deviceNums = [];
 		
 		var deviceImgs = [];
 		var deviceImgsLocked = [];
@@ -75,10 +74,9 @@ export default class Play extends Phaser.State {
 			var img = l.deviceStock[i][0];
 			var num = l.deviceStock[i][1];
 			
-			while (img.type > this.deviceText.length) {
+			while (img.type > this.deviceText.length + 1) {
 				offset ++;
 				this.deviceText.push(null);
-				this.deviceNums.push(0);
 			}
 			
 			img.setPosition(edge, i + offset);
@@ -89,7 +87,6 @@ export default class Play extends Phaser.State {
 
 			var text = game.add.text(size * (img.row + 1), size * (img.col + 0.5), 'x ' + num, { font: "32px Arial", fill: "#ffffff", align: "left" });
 			this.deviceText.push(text)
-			this.deviceNums.push(num)
 			//this.text.anchor.setTo(0.5, 0.5);
 		}
 		this.addImageGroup(deviceImgsLocked);
@@ -131,53 +128,50 @@ export default class Play extends Phaser.State {
     				console.log('item', item)
 					this.groupTop.removeAll();
 					group.add(item);
-					this.updateSignalStrength(item, container, this.dragFrom, obj.getIntType(), this.deviceText, this.deviceNums);
+					this.updateSignalStrength(item, container, this.dragFrom, this.deviceText);
 				});
 			}
 		}
 	}
 	
-	updateSignalStrength(item, container=[], dragFrom, type=0, deviceText=[], deviceNums=[]) {
+	updateSignalStrength(item, container=[], dragFrom={}, deviceText=[]) {
 		// TODO revert action when dropped at invalid position
 		// TODO update signal strength for all tiles
 		console.log('item.x', item.x, 'item.y', item.y, 'item.init_x', item.init_x, 'item.init_y', item.init_y, 'container.length', container.length)
-		
-		var isFromInitPos = (dragFrom.x == item.init_x && dragFrom.y == item.init_y);
+	
+		var type = item.data.type - 1;
 		
 		// check if inside map
 		if (item.x >= size * edge) {
-			var text = deviceText[type];
-			if (text && !isFromInitPos) {
-				text.setText('x ' + deviceNums[type]++)
-			}
 			item.x = item.init_x;
 			item.y = item.init_y;
-			return null
-		}
-		
-		// check if another item is already at position
-		var anotherItem;
-		for (var i = 0; i < container.length; i++) {
-			anotherItem = container[i];
-			console.log('another item', anotherItem.x, anotherItem.y)
-			if (anotherItem.index == item.index) {
-				continue;
-			}
-			if (anotherItem.x == item.x && anotherItem.y == item.y) {
-				var text = deviceText[type];
-				if (text && !isFromInitPos) {
-					text.setText('x ' + deviceNums[type]++)
+		} else {		
+			// check if another item is already at position
+			var anotherItem;
+			for (var i = 0; i < container.length; i++) {
+				anotherItem = container[i];
+				if (anotherItem.index == item.index) {
+					continue;
 				}
-				// invalid position: another item found
-				item.x = item.init_x;
-				item.y = item.init_y;
-				return null
+				if (anotherItem.x == item.x && anotherItem.y == item.y) {
+					// invalid position: another item found
+					item.x = item.init_x;
+					item.y = item.init_y;
+					break
+				}
 			}
 		}
 
 		var text = deviceText[type];
-		if (text && isFromInitPos) {
-			text.setText('x ' + deviceNums[type]--)
+		if (text) {
+			var num = 0;
+			for (var i = 0; i < container.length; i++) {
+				anotherItem = container[i];
+				if (anotherItem.x == item.init_x && anotherItem.y == item.init_y) {
+					num++;
+				}
+			}
+			text.setText('x ' + num)
 		}
 		return null;
 	}
