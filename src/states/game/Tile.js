@@ -62,6 +62,9 @@ export default class Tile {
                     if (!!emitter.triggerStrength){
                         this.second_round_emitters.push(emitter)
                     }else{
+                        
+                        let tileswithNewSingleStrength = [] 
+                        
                         for (let row = 0; row < rows; row++){
                             for (let col = 0; col < cols: col++){
                                 
@@ -72,18 +75,18 @@ export default class Tile {
                                     col: col,
                                 })
                                 
-                                const newSingleStrength = (() => {
-                                    
-                                }())
+                                distance = 
                                 
-                                if (idx === 0){
-                                    // this should reset the 'signalStrength'
-                                }else{
-                                    // this will only overwrite 
-                                }
+                                tileswithNewSingleStrength.push({
                                     
+                                })
+                                                                         
                             }                        
-                            
+                        }
+                        if (idx === 0){
+                            // this should reset the 'signalStrength'
+                        }else{
+                            // this will only overwrite 
                         }
                     }
                 })
@@ -109,8 +112,23 @@ export default class Tile {
         
         // @return { Number } decayed number of signal
         decaySingal({
+            rawSignalValue = 0,
+            distance = 0,
+            coefficient = 0.2,
+            permeabilities = [], // between 0 and 1
+        } = {}){
+            if (distance === 0) return rawSignalValue
+            if (coefficient === 0) return 0
             
-        }){
+            // will be a value between 0 and 1
+            const agg_perm = (Array.isArray(permeabilities) && permeabilities.length > 0) ? (
+                permeabilities.reduce((ttl, num) => {
+                    ttl * num 
+                    return num
+                }, 1)
+            ) : 1
+            
+            return rawSignalValue * coefficient / ()
             
         }
         
