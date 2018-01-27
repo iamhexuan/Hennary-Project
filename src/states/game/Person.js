@@ -1,6 +1,3 @@
-const emotions = {NEUTRAL:'neutral', HAPPY:'happy', UNHAPPY:'unhappy'}
-Object.freeze(emotions)
-
 export default class Person {
 	constructor(row,col,low,midlow,midhigh,high,type,id) {
 		this.row = row;
@@ -14,7 +11,7 @@ export default class Person {
 		this.type = type;
 		this.id = id;
 
-		this.emotion = emotions.NEUTRAL;
+		this.emotion = "netural";
 		this.strength = 0;
         this.payAmount = 0;
 	}
