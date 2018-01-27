@@ -18,6 +18,7 @@ class Game extends Phaser.Game {
     }
 }
 
+global.deviceTypes = {ROUTER:'router', RELAY:'relay'}
 global.tileTypes = {FLOOR:'floor', WALL:'wall', NA:'na'}
 global.personEmotions = {NEUTRAL:'neutral', HAPPY:'happy', UNHAPPY:'unhappy'}
 

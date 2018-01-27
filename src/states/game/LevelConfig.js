@@ -7,10 +7,10 @@ export default class LevelConfig {
 		var config = {
 			1:{
 				tiles:[
-					new Tile(0, 0, "floor", 1, 1)
-					//new Tile(0, 1, tileTypes.WALL, 0, 2),
-					//new Tile(1, 0, tileTypes.WALL, 1, 1),
-					//new Tile(1, 1, tileTypes.FLOOR, 1, 1),
+					new Tile(0, 0, tileTypes.WALL, 1, 1),
+					new Tile(0, 1, tileTypes.WALL, 0, 2),
+					new Tile(1, 0, tileTypes.WALL, 1, 1),
+					new Tile(1, 1, tileTypes.FLOOR, 1, 1)
 				],
 				deviceStock:[
 					[new Device(1, 'Router', ), 3]

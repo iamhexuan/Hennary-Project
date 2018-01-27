@@ -11,7 +11,7 @@ export default class Person {
 		this.type = type;
 		this.id = id;
 
-		this.emotion = "netural";
+		this.emotion = global.personEmotions.NEUTRAL;
 		this.strength = 0;
         this.payAmount = 0;
 	}
@@ -32,11 +32,11 @@ export default class Person {
 
 	calculatingPay(){
        switch(emotion){
-       	case "unhappy": payAmount += 0;
+       	case personEmotions.UNHAPPY: payAmount += 0;
        	break;
-       	case "netural": payAmount += 1;
+       	case personEmotions.NEUTRAL: payAmount += 1;
        	break;
-       	case "happy":   payAmount += 2;
+       	case personEmotions.HAPPY:   payAmount += 2;
        	break;
        }
 	}
