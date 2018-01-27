@@ -53,29 +53,38 @@ export default class Tile {
             const cols = !!canvas.cols ? canvas.cols : 0
             
             return new Promise((resolve, reject) => {
-                
-            
-            
                 if (!tile_size || !rows || !cols) return
-                
                 if (!Array.isArray(emitters) || emitters.length === 0) return
                 
-                emitters.forEach(emitter => {
-                    
-                    for (let row = 0; row < rows; row++){
-                        for (let col = 0; col < cols: col++){
-                            
-                            // tile VS emitter
-                            let tile = this.getTileAtPosition({
-                                tiles: tiles,
-                                row: row,
-                                col: col,
-                            })
-                            
-                            
+                let second_round_emitters = []
+                
+                emitters.forEach((emitter, idx) => {
+                    if (!!emitter.triggerStrength){
+                        this.second_round_emitters.push(emitter)
+                    }else{
+                        for (let row = 0; row < rows; row++){
+                            for (let col = 0; col < cols: col++){
                                 
-                        }                        
-                        
+                                // tile VS emitter
+                                let tile = this.getTileAtPosition({
+                                    tiles: tiles,
+                                    row: row,
+                                    col: col,
+                                })
+                                
+                                const newSingleStrength = (() => {
+                                    
+                                }())
+                                
+                                if (idx === 0){
+                                    // this should reset the 'signalStrength'
+                                }else{
+                                    // this will only overwrite 
+                                }
+                                    
+                            }                        
+                            
+                        }
                     }
                 })
               
@@ -99,7 +108,9 @@ export default class Tile {
         },
         
         // @return { Number } decayed number of signal
-        decaySingal(val){
+        decaySingal({
+            
+        }){
             
         }
         
