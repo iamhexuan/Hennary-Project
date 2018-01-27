@@ -22,4 +22,8 @@ export default class Level {
 	addCash(amount) {
 		this.cash += amount
 	}
+	
+	timer() {
+		// TODO call timer() on each tile, human, etc.
+	}
 }
