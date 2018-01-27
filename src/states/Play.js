@@ -56,7 +56,7 @@ export default class Play extends Phaser.State {
 		
 
 		// TODO init level
-		var l = new Level(1)
+		var l = new Level({levelNumber: 1})
 		l.addCash(5)
 		console.log(l.cash)
 		
