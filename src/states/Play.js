@@ -1,14 +1,16 @@
 import Phaser from 'phaser'
 
+import Level from './game/Level'
+
 export default class Play extends Phaser.State {
 
 	preload() {
 		var imagePath, imageName;
 		for (var i = 0; i < 10; i++) {
-			imagePath = 'assets/images/human/';
-			imageName = 'human_' + (i + 1) + '.png';
+			imagePath = 'assets/images/device/';
+			imageName = 'device_' + (i % 2 + 1) + '.png';
 			console.log(imagePath + imageName)
-			game.load.image(imageName, imagePath + imageName, 65, 75);
+			game.load.image(imageName, imagePath + imageName, 75, 75);
 		}
 	}
 
@@ -29,23 +31,30 @@ export default class Play extends Phaser.State {
 
 		game.time.events.loop(Phaser.Timer.SECOND, this.updateCounter, this);
 		
+		// TODO init level
+		var l = new Level(0)
+		l.addCash(5)
+		console.log(l.cash)
+		
 		// TODO draw sprites
-		this.items = []
-		this.addImage(this.items)
+		this.addImages();
 	}
 	
-	addImage(items = []) {
-		var item;
-		var test = game.add.group();
+	addImages(container = []) {
+		var imageName, item;
+		var group = game.add.group();
+		var group_top = game.add.group();
+		
+		game.world.bringToTop(group_top);
 		
 		for (var i = 0; i < 10; i++) {
-			var imageName = 'human_' + (i + 1) + '.png';
-			var item = test.create(90 * (1 + i%2), 90 * (1 + Math.floor(i/2)), imageName);
+			imageName = 'device_' + (i % 2 + 1) + '.png';
+			item = group.create(90 * (1 + i%2), 90 * (1 + Math.floor(i/2)), imageName);
 			item.init_x = item.x
 			item.init_y = item.y
+			item.index = i
 
-			items.push(item)
-			//console.log(items)
+			container.push(item);
 
 			// Enable input detection, then it's possible be dragged.
 			item.inputEnabled = true;
@@ -57,15 +66,36 @@ export default class Play extends Phaser.State {
 			// also we make it only snap when released.
 			item.input.enableSnap(90, 90, false, true);
 
+			item.events.onDragStart.add(item => group_top.add(item));
 			// Limit drop location
-			item.events.onDragStop.add(this.updateSignalStrength);
+			item.events.onDragStop.add(item => {
+				group_top.removeAll();
+				group.add(item);
+				this.updateSignalStrength(item,container);
+			});
 		}
 	}
 	
-	updateSignalStrength(item) {
+	updateSignalStrength(item, container=[]) {
 		// TODO revert action when dropped at invalid position
 		// TODO update signal strength for all tiles
-		console.log('item.x', item.x, 'item.y', item.y, 'item.init_x', item.init_x, 'item.init_y', item.init_y)
+		console.log('item.x', item.x, 'item.y', item.y, 'item.init_x', item.init_x, 'item.init_y', item.init_y, 'container.length', container.length)
+		
+		// check if another item is already at position
+		var anotherItem;
+		for (var i = 0; i < container.length; i++) {
+			anotherItem = container[i];
+			console.log('another item', anotherItem.x, anotherItem.y)
+			if (anotherItem.index == item.index) {
+				continue;
+			}
+			if (anotherItem.x == item.x && anotherItem.y == item.y) {
+				// invalid position: another item found
+				item.x = item.init_x;
+				item.y = item.init_y;
+				break
+			}
+		}
 	}
 
 	updateCounter() {
