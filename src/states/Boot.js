@@ -25,8 +25,8 @@ export default class Boot extends Phaser.State {
 
   create () {
     // Set the stage background colour
-    this.game.stage.backgroundColor = '#000'
-
+    this.game.stage.backgroundColor = '#fcfcfc'
+    
     // Everything from the preload function will have been loaded into cache by
     // this point, so we can now start the preloader
     this.state.start('Preloader')
