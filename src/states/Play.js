@@ -3,13 +3,16 @@ import Phaser from 'phaser'
 import Level from './game/Level'
 import Person from './game/Person'
 import Tile from './game/Tile'
+import LevelSelector from './game/LevelSelector'
+import LevelConfig from './game/LevelConfig'
 
 var size = 75, edge = 8;
+
 
 export default class Play extends Phaser.State {
 
 	preload() {
-		var imagePath, imageName;
+		var imagePath, imageName, imageId;
 		// load wall image
 		for (var i = 0; i < 15; i++) {
 			imagePath = 'assets/images/wall/';
@@ -30,6 +33,14 @@ export default class Play extends Phaser.State {
 			imageName = 'human_' + (i + 1) + '.png';
 			console.log(imagePath + imageName)
 			game.load.image(imageName, imagePath + imageName, 75, 75);
+		}
+		
+		// for level images
+		for (var i = 1; i < 2; i++) {
+			imagePath = 'assets/images/levels/'
+			imageName = `level_${i}_thumbnail.png`
+			imageId = `level_${i}`
+			game.load.image(imageId, imagePath + imageName)
 		}
 	}
 
@@ -56,7 +67,26 @@ export default class Play extends Phaser.State {
 		
 
 		// TODO init level
-		var l = new Level({levelNumber: 1})
+		var l = new Level({
+    		levelNumber: 1,
+    		goal: 0, 
+            cash: 0,
+            thumbnailPath: '',
+            thumbnailSize: [500, 400],
+        	isLocked: false,
+        })
+        
+        const levelSelector = LevelSelector
+        
+        console.log('levelSelector:', levelSelector)
+		
+		levelSelector.drawLevelSelector({ 
+            mainCanvas : {width: 1024, height: 768}, 
+            levels: [l], 
+            currentLevelNumber: 1
+        })
+		
+		
 		l.addCash(5)
 		console.log(l.cash)
 		

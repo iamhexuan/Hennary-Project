@@ -10,6 +10,7 @@ export default class Level {
     	isLocked = false,
     } = {}) {
 		let config = new LevelConfig().getConfig(levelNumber);
+		this.levelNumber = levelNumber;
 		this.humans = config.humanStock;
 		this.tiles = this.getTiles(config.dimension, config.walls);
 		this.deviceStock = config.deviceStock;
