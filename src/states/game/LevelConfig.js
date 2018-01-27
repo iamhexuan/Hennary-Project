@@ -35,9 +35,36 @@ export default class LevelConfig {
                     ]
 				],
 				humanStock:[
-					new Person(0,0, 0,10,20,1000,'Boy',1),
-					new Person(0,1, 0,10,20,1000,'Boy',2),
-					new Person(1,0, 0,10,20,1000,'Boy',3)
+					new Person({
+    					row: 0,
+    					col: 0, 
+    					low: 0,
+    					midlow: 10,
+    					midhigh:20,
+    					high: 1000,
+    					type: 'Boy',
+    					id: 1
+    				}),
+    				new Person({
+    					row: 0,
+    					col: 1, 
+    					low: 0,
+    					midlow: 10,
+    					midhigh:20,
+    					high: 1000,
+    					type: 'Boy',
+    					id: 2
+    				}),
+    				new Person({
+    					row: 1,
+    					col: 0, 
+    					low: 0,
+    					midlow: 10,
+    					midhigh:20,
+    					high: 1000,
+    					type: 'Boy',
+    					id: 3
+    				}),
 				],
 				cash: 100,
 				goal: 1000
