@@ -18,13 +18,13 @@ export default class Tile {
             {
                 row: 2,
                 col: 3,
-                signalStrength: 20,
+                strength: 20,
                 triggerStrength: 3,
             },
             {
                 row: 9,
                 col: 5,
-                signalStrength: 50,
+                strength: 50,
                 triggerStrength: 0,
             },
         ]
@@ -151,10 +151,7 @@ export default class Tile {
                                 coefficient: 0.2, // some random value to adjust
                                 permeabilities: blocker_permeabilities, // array of numbers between 0 and 1
                             })
-                            
-                            console.log('blocker_permeabilities', row, col, blocker_permeabilities, new_singleStrength)
-                            // tilesWithNewSingleStrength.push()
-                            
+                                                        
                             if (!tilesWithNewSingleStrength[row]){
                                 tilesWithNewSingleStrength[row] = {}
                             }
@@ -185,6 +182,8 @@ export default class Tile {
                 }
             }) // end emitters.forEach (first round)
             
+            console.log('updatedTileSingalStrength: ', updatedTileSingalStrength)
+            
             second_round_emitters.forEach(emitter => {
                 
             })
@@ -214,8 +213,11 @@ export default class Tile {
         // y = grad * x + offset
         // row = grad * col + offset
         if (emitter.row - row !== 0 && emitter.col - col !== 0){
+            
             const grad = (emitter.row - row) / (emitter.col - col)
             const offset = emitter.row - emitter.col * grad
+            
+            // console.log('getBlockersPermeabilityOfATileFromAEmitter', row, col, 'gradient case', grad, offset)
             
             // [start, end]
             const row_range = [emitter.row, row].sort((a,b) => a - b)
@@ -238,7 +240,7 @@ export default class Tile {
                     })
                     
                     
-                    const tile_permeability = _tile.permeability !== 'undefined' ? _tile.permeability : 1
+                    const tile_permeability = typeof _tile.permeability !== 'undefined' ? _tile.permeability : 1
                     
                     if (tile_permeability === 1) break; // no need do extra calculation
                                                                                                                     
@@ -303,11 +305,12 @@ export default class Tile {
         }
         
         // y = y_val
-        if(emitter.row - row !== 0 && emitter.col === 0){
+        if(emitter.row - row !== 0 && emitter.col - col === 0){
+            // console.log('getBlockersPermeabilityOfATileFromAEmitter', row, col, 'horizontal case')
             const _col = emitter.col 
             const row_bound = [emitter.row, row].sort((a,b) => a - b)
             let _blockers = []
-            for (let _row = row_bound[0]; _row <= row_bound[1]; row++){
+            for (let _row = row_bound[0]; _row <= row_bound[1]; _row++){
                 const _tile = this.getTileAtPosition({
                     tiles : tiles,
                     row : _row,
@@ -323,12 +326,13 @@ export default class Tile {
         }                                       
             
         // x = x_val    
-        if (emitter.row - row === 0 && emitter.col !== 0){
+        if (emitter.row - row === 0 && emitter.col - col !== 0){
+            // console.log('getBlockersPermeabilityOfATileFromAEmitter', row, col, 'vertical case')
             const _row = emitter.row
             const col_bound = [emitter.col, col].sort((a,b) => a - b)
             let _blockers = []
             
-            for (let _col = col_bound[0]; _col <= col_bound[1]; col++){
+            for (let _col = col_bound[0]; _col <= col_bound[1]; _col++){
                 const _tile = this.getTileAtPosition({
                     tiles : tiles,
                     row : _row,
@@ -341,7 +345,9 @@ export default class Tile {
             return _blockers
                 .map(_blk_tile => _blk_tile.permeability)
                 .filter(pm => typeof pm === 'number' && !Number.isNaN(pm) && pm !== 1)
-        }                                    
+        }
+        
+        return []                                   
         
     }
     
@@ -378,7 +384,7 @@ export default class Tile {
         coefficient = 0.2,
         permeabilities = [], // between 0 and 1
     } = {}){
-        if (distance === 0) return rawSignalValue
+        if (squareDistance === 0) return rawSignalValue
         if (coefficient === 0) return 0
         
         // will be a value between 0 and 1
