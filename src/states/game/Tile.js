@@ -45,12 +45,13 @@ export default class Tile {
         
         let _tiles = []
         
-        for (let r = 0; r < canvas.row; r++){
-            for (let c = 0; c < canvas.col; c++){
+
+        for (let r = 0; r < canvas.rows; r++){
+            for (let c = 0; c < canvas.cols; c++){
                 _tiles.push({
                     row: r,
                     col: c,
-                    permeability: (!!pm[r][c]) ? pm[r][c] : 0,
+                    permeability: (!!pm[r] && !!pm[r][c]) ? pm[r][c] : 0,
                 })
             }
         }
@@ -59,8 +60,6 @@ export default class Tile {
             canvas: canvas,
             tiles: _tiles,
             emitters: emitters,
-        }).resolve(res => {
-            
         })
     }
     
@@ -122,7 +121,7 @@ export default class Tile {
             
             emitters.forEach((emitter, idx) => {
                 if (!!emitter.triggerStrength){
-                    this.second_round_emitters.push(emitter)
+                    second_round_emitters.push(emitter)
                 }else{                        
                     let tilesWithNewSingleStrength = {}
                     for (let row = 0; row < rows; row++){
@@ -152,7 +151,7 @@ export default class Tile {
                                 squareDistance: square_distance,
                                 coefficient: 0.2, // some random value to adjust
                                 permeabilities: blocker_permeabilities, // array of numbers between 0 and 1
-                            }){
+                            })
                             
                             console.log('blocker_permeabilities', row, col, blocker_permeabilities, new_singleStrength)
                             // tilesWithNewSingleStrength.push()
@@ -179,7 +178,7 @@ export default class Tile {
                                         tilesWithNewSingleStrength[row][col] > updatedTileSingalStrength[row][col]
                                     )
                                         updatedTileSingalStrength[row][col] = tilesWithNewSingleStrength[row][col]
-                                }
+                                })
                             }
                         })
                     }    
@@ -198,7 +197,6 @@ export default class Tile {
                 })
             )                
         }) // end return new Promise
-        
     }
     
     // @return { Array } - array of numbers between 0 and 1.
@@ -239,6 +237,7 @@ export default class Tile {
                         row : _row,
                         col : _col,
                     })
+                    
                     
                     const tile_permeability = _tile.permeability !== 'undefined' ? _tile.permeability : 1
                     
@@ -300,7 +299,7 @@ export default class Tile {
                 }
             }
                                                     
-            return _blockers
+            return _blockers_perm
             
         }
         
@@ -350,7 +349,9 @@ export default class Tile {
     injectNewSignalStrengthToTiles({
         sourceTiles = [],
         newData = {}, // { row: { col: singleStrength }, row: { col: singleStrength } }
-    })        
+    }){
+        
+    }        
     
     // @return { Object } - that tile. If empty, return null
     getTileAtPosition({
@@ -358,10 +359,17 @@ export default class Tile {
         row = 0,
         col = 0,
     } = {}){
-        tiles.forEach(tile => {
-            if (tile.row === row && tile.col === col) return tile
-        })
-        return null
+        
+        let tile = null
+        
+        for (let idx = 0; idx < tiles.length; idx ++){
+            if (tiles[idx].row === row && tiles[idx].col === col){
+                tile = tiles[idx]
+                break
+            }
+        }
+        
+        return tile
     }
     
     // @return { Number } decayed number of signal

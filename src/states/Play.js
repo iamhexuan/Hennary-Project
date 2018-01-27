@@ -2,7 +2,7 @@ import Phaser from 'phaser'
 
 import Level from './game/Level'
 import Person from './game/Person'
-
+import Tile from './game/Tile'
 export default class Play extends Phaser.State {
 
 	preload() {
@@ -18,7 +18,11 @@ export default class Play extends Phaser.State {
 	create() {
 		this.counter = 0;
 		this.text = 0;
-
+        
+        let tile = new Tile()
+        
+        tile.runTileTests()
+        
 		game.stage.backgroundColor = '#6688ee';
 
 		this.text = game.add.text(game.world.centerX, game.world.centerY, 'Counter: 0', { font: "64px Arial", fill: "#ffffff", align: "center" });
