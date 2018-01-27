@@ -16,8 +16,16 @@ export default class Device {
   		this.triggerStrength = triggerStrength;
   	}
 	
-	getSpriteString(id){
-		var imageName = 'device_' + (id % 10 + 1) + '.png';
+	getIntType() {
+		// TODO more types
+		if (this.type == deviceTypes.RELAY) {
+			return 1;
+		}
+		return 0;
+	}
+	
+	getSpriteString(){
+		var imageName = 'device_' + (this.getIntType() % 2 + 1) + '.png';
 		return imageName
 	}
 }

@@ -24,9 +24,8 @@ export default class Person {
 	    calculatingPay();
 	}
 
-	getSpriteString(id){
-		var imagePath = 'assets/images/human/';
-		var imageName = 'human_' + (id % 10 + 1) + '.png';
+	getSpriteString(){
+		var imageName = 'human_' + (this.id % 10 + 1) + '.png';
 		return imageName
 	}
 

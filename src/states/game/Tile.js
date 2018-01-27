@@ -479,5 +479,9 @@ export default class Tile {
         ) : 1
         return rawSignalValue * Math.pow(2.71828, - coefficient * distance) * agg_perm
     }
-      
+
+	getSpriteString(){
+		var imageName = 'wall_' + (this.id % 15) + '.png';
+		return imageName
+	}
 }
