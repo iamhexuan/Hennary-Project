@@ -7,7 +7,7 @@ const levelConfig = {
 
 		],
 		deviceStock:[
-
+			[new Device(1, 'Router', ), 3]
 		],
 		humanStock:[
 			new Person(0,0, 0,10,20,1000,'Boy',1),
