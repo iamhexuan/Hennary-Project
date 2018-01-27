@@ -36,8 +36,9 @@ export default class Play extends Phaser.State {
 
 		game.time.events.loop(Phaser.Timer.SECOND, this.updateCounter, this);
 		
+
 		// TODO init level
-		var l = new Level(0)
+		var l = new Level(1)
 		l.addCash(5)
 		console.log(l.cash)
 		
