@@ -27,9 +27,7 @@ export default class Person {
 	
 	timer() {
 		// TODO call timer() on each tile, human, etc.
-		getStrength();
-		calculateEmotion();		
-	    calculatingPay();
+	    this.calculatingPay();
 	}
 
 	getSpriteString(){
@@ -38,32 +36,30 @@ export default class Person {
 	}
 
 	calculatingPay(){
-       switch(emotion){
-       	case personEmotions.UNHAPPY: payAmount += 0;
+       switch(this.emotion){
+       	case personEmotions.UNHAPPY: this.payAmount += 0;
        	break;
-       	case personEmotions.NEUTRAL: payAmount += 1;
+       	case personEmotions.NEUTRAL: this.payAmount += 1;
        	break;
-       	case personEmotions.HAPPY:   payAmount += 2;
+       	case personEmotions.HAPPY:   this.payAmount += 2;
        	break;
        }
 	}
 
 	actualPay(){
-		var temp = payAmount;
-		payAmount = 0;
+		var temp = this.payAmount;
+		this.payAmount = 0;
         return temp;
 	}
 
-	getStrength(){
-     //    strength = tile().getStrength(row,col)
-	}
-
-	calculateEmotion(){
-		if(strength < low) emotion = "unhappy"
-			else if(strength < midlow) emotion = "netural"
-				else if(strength < midhigh) emotion = "happy"
-					else if(strength < high) emotion = "netural"
-						else emotion = "unhappy"
+	calculateEmotion(tile){
+		var strength = tile.getStrength();
+		if(strength < this.low) this.emotion = "unhappy"
+			else if(strength < this.midlow) this.emotion = "netural"
+				else if(strength < this.midhigh) this.emotion = "happy"
+					else if(strength < this.high) this.emotion = "netural"
+						else this.emotion = "unhappy"
+		console.log('emotion', this.emotion);
 	}
 
 	movingPosition(){

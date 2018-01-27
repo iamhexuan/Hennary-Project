@@ -57,6 +57,7 @@ export default class Play extends Phaser.State {
 
 		// TODO init level
 		var l = new Level({levelNumber: 1})
+		this.level = l;
 		//l.addCash(5)
 		console.log(l.cash)
 		
@@ -176,11 +177,12 @@ export default class Play extends Phaser.State {
 			}
 			text.setText('x ' + num)
 		}
-		return null;
+		
+		this.level.onDragStop(container);
 	}
 
 	updateCounter() {
-		// TODO call Level.timer()
+		this.level.timer();
 		this.counter++;
 		this.text.setText('Counter: ' + this.counter);
 	}
