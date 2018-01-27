@@ -18,8 +18,8 @@ export default class Device {
   		this.triggerStrength = triggerStrength;
   	}
 	
-	getSpriteString(id){
-		var imageName = 'device_' + (id % 10 + 1) + '.png';
+	getSpriteString(){
+		var imageName = 'device_' + this.type + '.png';
 		return imageName
 	}
 }
