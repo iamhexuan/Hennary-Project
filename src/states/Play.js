@@ -3,13 +3,24 @@ import Phaser from 'phaser'
 import Level from './game/Level'
 import Person from './game/Person'
 import Tile from './game/Tile'
+
+var size = 80;
+
 export default class Play extends Phaser.State {
 
 	preload() {
 		var imagePath, imageName;
-		for (var i = 0; i < 10; i++) {
+		// load device image
+		for (var i = 0; i < 2; i++) {
 			imagePath = 'assets/images/device/';
-			imageName = 'device_' + (i % 2 + 1) + '.png';
+			imageName = 'device_' + (i + 1) + '.png';
+			console.log(imagePath + imageName)
+			game.load.image(imageName, imagePath + imageName, 75, 75);
+		}
+		// load human image
+		for (var i = 0; i < 10; i++) {
+			imagePath = 'assets/images/human/';
+			imageName = 'human_' + (i + 1) + '.png';
 			console.log(imagePath + imageName)
 			game.load.image(imageName, imagePath + imageName, 75, 75);
 		}
@@ -43,19 +54,19 @@ export default class Play extends Phaser.State {
 		console.log(l.cash)
 		
 		// TODO draw sprites
-		this.addImages();
+		this.addImages(l.humans);
 	}
 	
-	addImages(container = []) {
+	addImages(array, container = []) {
 		var imageName, item;
 		var group = game.add.group();
 		var group_top = game.add.group();
 		
 		game.world.bringToTop(group_top);
 		
-		for (var i = 0; i < 10; i++) {
-			imageName = 'device_' + (i % 2 + 1) + '.png';
-			item = group.create(90 * (1 + i%2), 90 * (1 + Math.floor(i/2)), imageName);
+		for (var i = 0; i < array.length; i++) {
+			var obj = array[i];
+			item = group.create(size * obj.row, size * obj.col, obj.getSpriteString(obj.id));
 			item.init_x = item.x
 			item.init_y = item.y
 			item.index = i
@@ -70,7 +81,7 @@ export default class Play extends Phaser.State {
 			
 			// Then we make it snap to left and right side,
 			// also we make it only snap when released.
-			item.input.enableSnap(90, 90, false, true);
+			item.input.enableSnap(size, size, false, true);
 
 			item.events.onDragStart.add(item => group_top.add(item));
 			// Limit drop location

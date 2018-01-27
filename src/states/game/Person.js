@@ -28,9 +28,9 @@ export default class Person {
 	}
 
 	getSpriteString(id){
-		imagePath = 'assets/images/human/';
-		imageName = 'human_' + (id % 10 + 1) + '.png';
-		return imagePath + imageName
+		var imagePath = 'assets/images/human/';
+		var imageName = 'human_' + (id % 10 + 1) + '.png';
+		return imageName
 	}
 
 	calculatingPay(){
