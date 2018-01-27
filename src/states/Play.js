@@ -3,13 +3,24 @@ import Phaser from 'phaser'
 import Level from './game/Level'
 import Person from './game/Person'
 import Tile from './game/Tile'
+
+var size = 80;
+
 export default class Play extends Phaser.State {
 
 	preload() {
 		var imagePath, imageName;
-		for (var i = 0; i < 10; i++) {
+		// load device image
+		for (var i = 0; i < 2; i++) {
 			imagePath = 'assets/images/device/';
-			imageName = 'device_' + (i % 2 + 1) + '.png';
+			imageName = 'device_' + (i + 1) + '.png';
+			console.log(imagePath + imageName)
+			game.load.image(imageName, imagePath + imageName, 75, 75);
+		}
+		// load human image
+		for (var i = 0; i < 10; i++) {
+			imagePath = 'assets/images/human/';
+			imageName = 'human_' + (i + 1) + '.png';
 			console.log(imagePath + imageName)
 			game.load.image(imageName, imagePath + imageName, 75, 75);
 		}
@@ -36,48 +47,60 @@ export default class Play extends Phaser.State {
 
 		game.time.events.loop(Phaser.Timer.SECOND, this.updateCounter, this);
 		
+
 		// TODO init level
-		var l = new Level(0)
+		var l = new Level(1)
 		l.addCash(5)
 		console.log(l.cash)
 		
 		// TODO draw sprites
-		this.addImages();
+		this.addImageGroup(l.humans);
+		
+		var deviceImgs = [];
+		var deviceNums = [];
+		for (var i = 0; i < l.deviceStock.length; i++) {
+			var img = l.deviceStock[i][0];
+			var num = l.deviceStock[i][1];
+			img.setPosition(4, i);
+			deviceImgs.push(img);
+			deviceNums.push(num);
+		}
+		this.addImageGroup(deviceImgs, true);
+		
+		this.groupTop = game.add.group();
+		game.world.bringToTop(this.groupTop);
 	}
 	
-	addImages(container = []) {
+	addImageGroup(array, enableDrag = false, container = []) {
 		var imageName, item;
 		var group = game.add.group();
-		var group_top = game.add.group();
 		
-		game.world.bringToTop(group_top);
-		
-		for (var i = 0; i < 10; i++) {
-			imageName = 'device_' + (i % 2 + 1) + '.png';
-			item = group.create(90 * (1 + i%2), 90 * (1 + Math.floor(i/2)), imageName);
+		for (var i = 0; i < array.length; i++) {
+			var obj = array[i];
+			item = group.create(size * obj.row, size * obj.col, obj.getSpriteString(obj.id));
 			item.init_x = item.x
 			item.init_y = item.y
 			item.index = i
 
 			container.push(item);
 
-			// Enable input detection, then it's possible be dragged.
-			item.inputEnabled = true;
-
-			// Make this item draggable.
-			item.input.enableDrag();
-			
-			// Then we make it snap to left and right side,
-			// also we make it only snap when released.
-			item.input.enableSnap(90, 90, false, true);
-
-			item.events.onDragStart.add(item => group_top.add(item));
-			// Limit drop location
-			item.events.onDragStop.add(item => {
-				group_top.removeAll();
-				group.add(item);
-				this.updateSignalStrength(item,container);
-			});
+			if (enableDrag) {
+				// Enable input detection, then it's possible be dragged.
+				item.inputEnabled = true;
+				// Make this item draggable.
+				item.input.enableDrag();			
+				// Then we make it snap to left and right side,
+				// also we make it only snap when released.
+				item.input.enableSnap(size, size, false, true);	
+				// use group to handle zIndex
+				item.events.onDragStart.add(item => this.groupTop.add(item));
+				// Limit drop location
+				item.events.onDragStop.add(item => {
+					this.groupTop.removeAll();
+					group.add(item);
+					this.updateSignalStrength(item,container);
+				});
+			}
 		}
 	}
 	
