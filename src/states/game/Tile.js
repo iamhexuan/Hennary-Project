@@ -1,6 +1,10 @@
-import Phaser from 'phaser'
+//import Phaser from 'phaser'
 
 export default class Tile {
+    
+    constructor(num) {
+        this.num = num
+    }
     
     // for test only 
     runTileTests(){
@@ -39,11 +43,11 @@ export default class Tile {
             },
         }
         
-        let tiles = []
+        let _tiles = []
         
         for (let r = 0; r < canvas.row; r++;){
             for (let c = 0; c < canvas.col; c++;){
-                tiles.push({
+                _tiles.push({
                     row: r,
                     col: c,
                     permeability: (!!pm[r][c]) ? pm[r][c] : 0,
@@ -53,16 +57,13 @@ export default class Tile {
         
         this.updateTilesSignalStrength({
             canvas: canvas,
-            tiles: tiles,
+            tiles: _tiles,
             emitters: emitters,
+        }).resolve(res => {
+            
         })
     }
     
-    /*
-    constructor () {
-        super()
-    }
-    */
 
     // @param { Array } tiles of tile
     
@@ -225,13 +226,13 @@ export default class Tile {
             
             let _blockers_perm = [] // [ permeability / percentage ]
             
-            for (let _row = row_range[0]; _row <= row_range[1]; _row++;){
+            for (let _row = row_range[0]; _row <= row_range[1]; _row++){
                 
                 const row_bounds = [_row - 0.5, _row + 0.5]
                 
                 const row_intercepts_at_cols = row_bounds.map(_r => (_r - offset) / grad).sort((a,b) => a - b)
                 
-                for (let _col = col_range[0]; _col <= col_range[1]; _col++;){
+                for (let _col = col_range[0]; _col <= col_range[1]; _col++){
                     
                     const _tile = this.getTileAtPosition({
                         tiles : tiles,
