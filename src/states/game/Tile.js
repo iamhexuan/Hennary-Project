@@ -1,5 +1,11 @@
 export default class Tile {
-    constructor(row, col, type, permeability, id) {
+    constructor({ 
+        row = -1, 
+        col = -1, 
+        type = '', 
+        permeability = 1, 
+        id = ''
+    } = {}) {
         this.row = row;
         this.col = col;
         this.type = type;
