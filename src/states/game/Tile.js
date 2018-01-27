@@ -2,8 +2,12 @@
 
 export default class Tile {
     
-    constructor(num) {
-        this.num = num
+    constructor(row, col, type, permeability, signalStrength) {
+        this.row = row 
+        this.col = col 
+        this.type = type 
+        this.permeability = permeability
+        this.signalStrength = signalStrength
     }
     
     // for test only 
@@ -23,6 +27,12 @@ export default class Tile {
             },
             {
                 row: 9,
+                col: 5,
+                strength: 50,
+                triggerStrength: 0,
+            },
+            {
+                row: 5,
                 col: 5,
                 strength: 50,
                 triggerStrength: 0,
@@ -183,7 +193,7 @@ export default class Tile {
                 }
             }) // end emitters.forEach (first round)
             
-            console.log('updatedTileSingalStrength: ', updatedTileSingalStrength)
+            console.log('%cupdatedTileSingalStrength: ', 'background: orange;color:white;', updatedTileSingalStrength)
             
             second_round_emitters.forEach(emitter => {
                 
@@ -395,7 +405,7 @@ export default class Tile {
                 return num
             }, 1)
         ) : 1            
-        return rawSignalValue * coefficient / squareDistance * agg_perm
+        return rawSignalValue / ( squareDistance ) * agg_perm
     }
       
 }
