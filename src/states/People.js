@@ -1,5 +1,5 @@
 export default class OurHuman {
-	constructor(row,col,low,midlow,midhigh,high,type,status,id) {
+	constructor(row,col,low,midlow,midhigh,high,type,id) {
 
 		this.row = row;
 		this.col = col;
@@ -8,7 +8,6 @@ export default class OurHuman {
 		this.midhigh = midhigh;
 		this.high = high;
 		this.type = type;
-		this.status = status;
 		this.id = id;
 		this.emotion = 0;
 		this.strength = 0;
@@ -68,8 +67,8 @@ export default class OurHuman {
         return temp;
 	}
 
-	getStrength({row = 0, col =0} = {}){
-   
+	getStrength(){
+     //    strength = tile().getStrength(row,col)
 	}
 
 	calculateEmotion(){
