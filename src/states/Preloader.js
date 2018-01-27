@@ -21,4 +21,9 @@ export default class Preloader extends Phaser.State {
   create () {
     this.state.start('Play')
   }
+  
+  
+  
+  render() {
+ }
 }
