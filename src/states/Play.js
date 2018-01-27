@@ -8,6 +8,7 @@ import LevelConfig from './game/LevelConfig'
 
 var size = 75, edge = 8;
 
+var levelSelector = new LevelSelector()
 
 export default class Play extends Phaser.State {
 
@@ -36,12 +37,8 @@ export default class Play extends Phaser.State {
 		}
 		
 		// for level images
-		for (var i = 1; i < 2; i++) {
-			imagePath = 'assets/images/levels/'
-			imageName = `level_${i}_thumbnail.png`
-			imageId = `level_${i}`
-			game.load.image(imageId, imagePath + imageName)
-		}
+		
+		levelSelector.loadLevelSelector({ levelNumbers : [1,2,3] })
 	}
 
 	create() {
@@ -67,25 +64,25 @@ export default class Play extends Phaser.State {
 		
 
 		// TODO init level
-		var l = new Level({
-    		levelNumber: 1,
+		var ls = [1,2,3].map(num => new Level({
+    		levelNumber: num,
     		goal: 0, 
             cash: 0,
             thumbnailPath: '',
-            thumbnailSize: [500, 400],
+            thumbnailSize: [500, 300],
         	isLocked: false,
-        })
-        
-        const levelSelector = LevelSelector
-        
+        }))
+                
         console.log('levelSelector:', levelSelector)
 		
 		levelSelector.drawLevelSelector({ 
             mainCanvas : {width: 1024, height: 768}, 
-            levels: [l], 
+            levels: ls, 
             currentLevelNumber: 1
         })
 		
+		
+		let l = ls[0]
 		
 		l.addCash(5)
 		console.log(l.cash)

@@ -5,7 +5,7 @@ import Tile from "./Tile"
 export default class LevelConfig {
 	getConfig(levelNumber){
 		var config = {
-			1:{
+			1: {
 				dimension: [10, 12],
 				walls:[
 					new Tile({ row: 1, col: 1, type: tileTypes.WALL, permeability: 0, id: 1 }),
@@ -107,6 +107,18 @@ export default class LevelConfig {
 				],
 				cash: 100,
 				goal: 1000
+			},
+			2: {
+    			dimension: [10, 12],
+				walls:[
+					new Tile({ row: 1, col: 1, type: tileTypes.WALL, permeability: 0, id: 1 }),
+                ],
+			},
+			3: {
+    			dimension: [10, 12],
+				walls:[
+					new Tile({ row: 1, col: 1, type: tileTypes.WALL, permeability: 0, id: 1 }),
+                ],
 			}
 		};
 		return config[levelNumber]; 
