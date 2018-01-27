@@ -49,6 +49,12 @@ export default class Tile {
             '6': {
                 '5': 0.3,
             },
+            '7': {
+                '5': 0.3,
+            },
+            '8': {
+                '5': 0.3,
+            },
         }
         
         let _tiles = []
@@ -112,6 +118,8 @@ export default class Tile {
         canvas = {},
         tiles = [],
         emitters = [],
+        resolveSimplifiedObject = false,
+        overwriteSourceTiles = false,
     } = {}){
         const tile_size = !!canvas.tileSize ? canvas.tileSize : 0   
         const rows = !!canvas.rows ? canvas.rows : 0
@@ -127,83 +135,130 @@ export default class Tile {
             
             let updatedTileSingalStrength = {}
             
+            let updateTileSingalStrength = newSignal => {
+                Object.keys(newSignal).forEach(row => {
+                    if (typeof newSignal[row] === 'object'){
+                        if (!updatedTileSingalStrength[row]){
+                            updatedTileSingalStrength[row] = {}
+                        }
+                        Object.keys(newSignal[row]).forEach(col => {
+                            if (!updatedTileSingalStrength[row][col] || 
+                                newSignal[row][col] > updatedTileSingalStrength[row][col]
+                            )
+                                updatedTileSingalStrength[row][col] = newSignal[row][col]
+                        })
+                    }
+                })
+            }
+            
+            
             emitters.forEach((emitter, idx) => {
                 if (!!emitter.triggerStrength){
                     second_round_emitters.push(emitter)
                 }else{                        
-                    let tilesWithNewSingleStrength = {}
-                    for (let row = 0; row < rows; row++){
-                        for (let col = 0; col < cols; col++){
-                            
-                            // tile VS emitter
-                            let tile = this.getTileAtPosition({
-                                tiles: tiles,
-                                row: row,
-                                col: col,
-                            })
-                            
-                            const rawSignalStrength = emitter.strength
-                                                            
-                            // @return [ permeability * length ]
-                            const blocker_permeabilities = this.getBlockersPermeabilityOfATileFromAEmitter({
-                                tiles: tiles,
-                                emitter: emitter,
-                                row: row,
-                                col: col,
-                            })
-                            
-                            const square_distance = Math.pow(emitter.row - row, 2) + Math.pow(emitter.col - col, 2)
-                            
-                            const new_signalStrength = this.calcDecaySingal({
-                                rawSignalValue : rawSignalStrength,
-                                squareDistance: square_distance,
-                                coefficient: 0.2, // some random value to adjust
-                                permeabilities: blocker_permeabilities, // array of numbers between 0 and 1
-                            })
-                                                        
-                            if (!tilesWithNewSingleStrength[row]){
-                                tilesWithNewSingleStrength[row] = {}
-                            }
-                            tilesWithNewSingleStrength[row][col] = new_signalStrength
-                                                                   
-                        }  // end for col              
-                    } // end for row
+                    
+                    let tilesWithNewSingleStrength = this.loopTilesForSignalStrength({
+                        canvas: canvas,
+                        emitter: emitter,
+                        tiles: tiles,
+                    })
+                    
                     if (first_round_count === 0){
                         // this should reset the 'signalStrength'
                         updatedTileSingalStrength = tilesWithNewSingleStrength
                     }else{
                         // this will only overwrite 
-                        Object.keys(tilesWithNewSingleStrength).forEach(row => {
-                            if (typeof tilesWithNewSingleStrength[row] === 'object'){
-                                if (!updatedTileSingalStrength[row]){
-                                    updatedTileSingalStrength[row] = {}
-                                }
-                                Object.keys(tilesWithNewSingleStrength[row]).forEach(col => {
-                                    if (!updatedTileSingalStrength[row][col] || 
-                                        tilesWithNewSingleStrength[row][col] > updatedTileSingalStrength[row][col]
-                                    )
-                                        updatedTileSingalStrength[row][col] = tilesWithNewSingleStrength[row][col]
-                                })
-                            }
-                        })
+                        updateTileSingalStrength(tilesWithNewSingleStrength)
                     }    
                     first_round_count++     
                 }
             }) // end emitters.forEach (first round)
             
-            console.log('%cupdatedTileSingalStrength: ', 'background: orange;color:white;', updatedTileSingalStrength)
-            
             second_round_emitters.forEach(emitter => {
-                
+                let tilesWithNewSingleStrength = this.loopTilesForSignalStrength({
+                    canvas: canvas,
+                    emitter: emitter,
+                    tiles: tiles,
+                    currentTileSingleStrength: updatedTileSingalStrength,
+                })
+                updateTileSingalStrength(tilesWithNewSingleStrength)
             })
             
-            resolve(
-                this.injectNewSignalStrengthToTiles({
-                    sourceTiles: tiles,
+            console.log('%cupdatedTileSingalStrength: ', 'background: orange;color:white;', updatedTileSingalStrength)
+            
+            let updatedTiles
+            
+            if (!resolveSimplifiedObject || overwriteSourceTiles){
+                updatedTiles = this.injectNewSignalStrengthToTiles({
+                    sourceTiles: tiles, // This will overwrite sourceTile
                     newData: updatedTileSingalStrength,
+                    overwriteSourceTiles: overwriteSourceTiles,
                 })
-            )                
+            }
+            
+            console.log('%cupdatedTiles: ', 'background: blue;color:white;', updatedTiles)
+            
+            if (resolveSimplifiedObject){
+                resolve(updatedTileSingalStrength)
+            }else{
+                resolve(updatedTiles) 
+            }
+                           
         }) // end return new Promise
+    }
+    
+    // @param {Object}currentTilesSignalStrength - {row: {col : strength }}
+    loopTilesForSignalStrength({
+        canvas = {},
+        emitter = {},
+        tiles = [],
+        currentTilesSignalStrength = {}, // updatedTileSingalStrength 
+    }){
+        const [rows, cols] = [canvas.rows, canvas.cols]
+        
+        let tilesWithNewSingleStrength = {}
+        
+        for (let row = 0; row < rows; row++){
+            if (!tilesWithNewSingleStrength[row]){
+                tilesWithNewSingleStrength[row] = {}
+            }
+            for (let col = 0; col < cols; col++){
+                
+                const rawSignalStrength = emitter.strength
+                
+                let is_triggerred = (emitter.triggerStrength === 0 || 
+                    !!currentTilesSignalStrength &&
+                    !!currentTilesSignalStrength[row] && 
+                    !!currentTilesSignalStrength[row][col] && 
+                    currentTilesSignalStrength[row][col] >= rawSignalStrength
+                )
+                                  
+                if (is_triggerred){                                
+                    // @return [ permeability * length ]
+                    const blocker_permeabilities = this.getBlockersPermeabilityOfATileFromAEmitter({
+                        tiles: tiles,
+                        emitter: emitter,
+                        row: row,
+                        col: col,
+                    })
+                    
+                    const square_distance = Math.pow(emitter.row - row, 2) + Math.pow(emitter.col - col, 2)
+                    
+                    const new_signalStrength = this.calcDecaySingal({
+                        rawSignalValue : rawSignalStrength,
+                        distance: Math.sqrt(square_distance),
+                        coefficient: 0.2, // some random value to adjust
+                        permeabilities: blocker_permeabilities, // array of numbers between 0 and 1
+                    })
+                                                
+                    tilesWithNewSingleStrength[row][col] = new_signalStrength
+                }else{
+                    tilesWithNewSingleStrength[row][col] = 0
+                } // end if else
+            }  // end for col              
+        } // end for row
+        
+        return tilesWithNewSingleStrength
     }
     
     // @return { Array } - array of numbers between 0 and 1.
@@ -360,11 +415,24 @@ export default class Tile {
         
     }
     
+    // @return { Array } - updated tiles
     injectNewSignalStrengthToTiles({
         sourceTiles = [],
         newData = {}, // { row: { col: singleStrength }, row: { col: singleStrength } }
-    }){
+        overwriteSourceTiles = false,
+    } = {}){
+        let return_tiles = []
+        if (!Array.isArray(sourceTiles)) return []
+        sourceTiles.forEach((tile, idx, tiles) => {
+            const [row , col] = [tile.row, tile.col] 
+            const new_signal_stren = (!!newData && !!newData[row]) ? newData[row][col] : 0
+            if (overwriteSourceTiles){
+                tiles[idx].signalStrength = new_signal_stren
+            }
+            return_tiles.push( Object.assign({}, tile, { 'signalStrength': new_signal_stren }) )
+        })
         
+        return return_tiles
     }        
     
     // @return { Object } - that tile. If empty, return null
@@ -389,11 +457,11 @@ export default class Tile {
     // @return { Number } decayed number of signal
     calcDecaySingal({
         rawSignalValue = 0,
-        squareDistance = 0,
-        coefficient = 0.2,
+        distance = 0,
+        coefficient = 0.2, // lamda
         permeabilities = [], // between 0 and 1
     } = {}){
-        if (squareDistance === 0) return rawSignalValue
+        if (distance === 0) return rawSignalValue
         if (coefficient === 0) return 0
         
         // will be a value between 0 and 1
@@ -402,8 +470,8 @@ export default class Tile {
                 ttl * num 
                 return num
             }, 1)
-        ) : 1            
-        return rawSignalValue / ( squareDistance ) * agg_perm
+        ) : 1
+        return rawSignalValue * Math.pow(2.71828, - coefficient * distance) * agg_perm
     }
       
 }
