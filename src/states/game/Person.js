@@ -28,30 +28,9 @@ export default class Person {
 	}
 
 	getSpriteString(id){
-     switch(id){
-         case 0:return "assets/images/human/b1.png"
-       break;
-         case 1:return "assets/images/human/b2.png"
-       break;
-         case 2:return "assets/images/human/b3.png"
-       break;
-         case 3:return "assets/images/human/b4.png"
-       break;
-         case 4:return "assets/images/human/b5.png"
-       break;
-         case 5:return "assets/images/human/g1.png"
-       break;
-         case 6:return "assets/images/human/g2.png"
-       break;
-         case 7:return "assets/images/human/g3.png"
-       break;
-         case 8:return "assets/images/human/g4.png"
-       break;
-         case 9:return "assets/images/human/g5.png"
-       break;
-       default: return null;
-
-     }
+		imagePath = 'assets/images/human/';
+		imageName = 'human_' + (id % 10 + 1) + '.png';
+		return imagePath + imageName
 	}
 
 	calculatingPay(){
