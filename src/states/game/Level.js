@@ -1,5 +1,5 @@
 import LevelConfig from "./LevelConfig"
-
+import Tile from "./Tile"
 export default class Level {
 	constructor({
     	levelNumber = 0, 
@@ -11,7 +11,7 @@ export default class Level {
     } = {}) {
 		let config = new LevelConfig().getConfig(levelNumber);
 		this.humans = config.humanStock;
-		this.tiles = config.tiles;
+		this.tiles = this.getTiles(config.dimension, config.walls);
 		this.deviceStock = config.deviceStock;
 		this.cash = config.cash;
 		this.goal = config.goal;
@@ -21,6 +21,20 @@ export default class Level {
     		'height': thumbnailSize[1],
 		}
 		this.isLocked = isLocked
+	}
+
+	getTiles(dimension, walls){
+		var tiles = [];
+		for(var i = 0; i < dimension[0]; i++){
+			for(var j = 0; j < dimension[1]; j++){
+				tiles.push(new Tile({ row: i, col: j, type: tileTypes.FLOOR, permeability: 0, id: 0 }));
+			}
+		}
+
+		walls.forEach(function(item){
+			tiles[item.row * dimension[0] + item.col] = item;
+		})
+		return tiles;
 	}
 
 	evaluate() {

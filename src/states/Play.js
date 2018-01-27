@@ -4,7 +4,7 @@ import Level from './game/Level'
 import Person from './game/Person'
 import Tile from './game/Tile'
 
-var size = 80, edge = 8;
+var size = 75, edge = 8;
 
 export default class Play extends Phaser.State {
 
@@ -102,7 +102,7 @@ export default class Play extends Phaser.State {
 		
 		for (var i = 0; i < array.length; i++) {
 			var obj = array[i];
-			item = group.create(size * obj.row, size * obj.col, obj.getSpriteString());
+			item = group.create(size * obj.col, size * obj.row, obj.getSpriteString());
 			item.init_x = item.x
 			item.init_y = item.y
 			item.index = i
