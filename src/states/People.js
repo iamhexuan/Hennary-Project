@@ -19,45 +19,39 @@ export default class OurHuman {
 	
 	timer() {
 		// TODO call timer() on each tile, human, etc.
+		getStrength();
+		calculateEmotion();		
+	    calculatingPay();
 	}
 
-	getSprite(){
-		switch(id){
-			case 1:
-            {
-               
-            }
-			break;
-			case 2:
-            {
+	getSpriteString(id){
+     switch(id){
+         case 0:return "../../../assets/images/human/b1.png"
+       break;
+         case 1:return "../../../assets/images/human/b2.png"
+       break;
+         case 2:return "../../../assets/images/human/b3.png"
+       break;
+         case 3:return "../../../assets/images/human/b4.png"
+       break;
+         case 4:return "../../../assets/images/human/b5.png"
+       break;
+         case 5:return "../../../assets/images/human/g1.png"
+       break;
+         case 6:return "../../../assets/images/human/g2.png"
+       break;
+         case 7:return "../../../assets/images/human/g3.png"
+       break;
+         case 8:return "../../../assets/images/human/g4.png"
+       break;
+         case 9:return "../../../assets/images/human/g5.png"
+       break;
+       default: return null;
 
-            }
-			break;
-			case 3:
-            {
-
-            }
-			break;
-			case 4:
-            {
-
-            }
-			break;
-			case 5:
-            {
-
-            }
-			break;
-            case 6:
-            {
-
-            }
-			break;
-		}
+     }
 	}
 
 	calculatingPay(){
-       // TODO calculating the accumulated pay amount 
        switch(emotion){
        	case "unhappy": payAmount += 0;
        	break;
@@ -71,12 +65,11 @@ export default class OurHuman {
 	actualPay(){
 		var temp = payAmount;
 		payAmount = 0;
-       return temp;
+        return temp;
 	}
 
 	getStrength({row = 0, col =0} = {}){
-
-    
+   
 	}
 
 	calculateEmotion(){
@@ -85,9 +78,6 @@ export default class OurHuman {
 				else if(strength < midhigh) emotion = "happy"
 					else if(strength < high) emotion = "netural"
 						else emotion = "unhappy"
-
-	    calculatingPay();
-     // TODO calculate emotion based on wifi strength
 	}
 
 	movingPosition(){
