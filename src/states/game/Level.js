@@ -1,0 +1,24 @@
+export default class Level {
+	constructor(goal = 0, cash = 0, stock = [], humanStock = []) {
+		this.goal = goal;
+		this.cash = cash;
+    	this.stock = stock;
+		this.humanStock = humanStock;
+	}
+
+	evaluate() {
+		// TODO evaluate performance based on time
+	}
+	
+	isWon() {
+		this.cash >= this.goal
+	}
+	
+	isLost() {
+		this.cash <= 0
+	}
+	
+	addCash(amount) {
+		this.cash += amount
+	}
+}
