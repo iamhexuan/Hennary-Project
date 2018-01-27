@@ -14,8 +14,11 @@ class Game extends Phaser.Game {
         this.state.add('Preloader', Preloader)
         this.state.add('Play', Play)
         this.state.add('Controllers', Controllers)
-        this.state.start('Boot')
+        this.state.start('Boot') 
     }
 }
+
+global.tileTypes = {FLOOR:'floor', WALL:'wall', NA:'na'}
+global.personEmotions = {NEUTRAL:'neutral', HAPPY:'happy', UNHAPPY:'unhappy'}
 
 window.game = new Game()

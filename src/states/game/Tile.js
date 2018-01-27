@@ -1,13 +1,11 @@
-//import Phaser from 'phaser'
-
 export default class Tile {
-    
-    constructor(row, col, type, permeability, signalStrength) {
-        this.row = row 
-        this.col = col 
-        this.type = type 
-        this.permeability = permeability
-        this.signalStrength = signalStrength
+    constructor(row, col, type, permeability, id) {
+        this.row = row;
+        this.col = col;
+        this.type = type;
+        this.permeability = permeability;
+        this.id = id;
+        this.signalStrength = 0;
     }
     
     // for test only 
