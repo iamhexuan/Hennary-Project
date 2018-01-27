@@ -1,5 +1,13 @@
 export default class Person {
-	constructor(row,col,low,midlow,midhigh,high,type,id) {
+	constructor({
+    	row = -1,
+    	col = -1,
+    	low = 0,
+    	midlow = 0,
+    	midhigh = Number.Infinity,
+    	high = Number.Infinity,
+    	type = '',
+    	id = ''} = {}){
 		this.row = row;
 		this.col = col;
 		

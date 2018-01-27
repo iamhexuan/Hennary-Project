@@ -109,6 +109,7 @@ export default class Play extends Phaser.State {
 			item.init_x = item.x
 			item.init_y = item.y
 			item.index = i
+			item.data = array[i]
 
 			container.push(item);
 
@@ -127,6 +128,7 @@ export default class Play extends Phaser.State {
 				});
 				// Limit drop location
 				item.events.onDragStop.add(item => {
+    				console.log('item', item)
 					this.groupTop.removeAll();
 					group.add(item);
 					this.updateSignalStrength(item, container, this.dragFrom, obj.getIntType(), this.deviceText, this.deviceNums);
