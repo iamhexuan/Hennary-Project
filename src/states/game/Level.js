@@ -14,6 +14,7 @@ export default class Level {
 		this.humans = config.humanStock;
 		this.tiles = this.getTiles(config.dimension, config.walls);
 		this.deviceStock = config.deviceStock;
+		this.emitters = [];
 		this.cash = config.cash;
 		this.goal = config.goal;
 		this.thumbnail = {
@@ -22,6 +23,7 @@ export default class Level {
     		'height': thumbnailSize[1],
 		}
 		this.isLocked = isLocked
+		this.dimension = config.dimension
 	}
 
 	getTiles(dimension, walls){
@@ -52,9 +54,43 @@ export default class Level {
 	
 	addCash(amount) {
 		this.cash += amount
+		console.log('add cash', amount, this.cash)
 	}
 	
 	timer() {
 		// TODO call timer() on each tile, human, etc.
+		// loop all humans
+		for (var i = 0; i < this.humans.length; i++) {
+			var human = this.humans[i];
+			human.timer();
+			this.addCash(human.actualPay())
+		}
+	}
+	
+	onDragStop(container) {
+		this.emitters = [];
+		for (var i = 0; i < container.length; i++) {
+			var item = container[i];
+			if (item.x != item.init_x || item.y != item.init_y) {
+				this.emitters.push(item.data);
+			}
+		}
+
+		// loop all tiles
+		var a = new Tile();
+		a.updateTilesSignalStrength({
+			canvas:{rows:this.dimension[0], cols:this.dimension[1]},
+			tiles: this.tiles,
+			emitters: this.emitters,
+			overwriteSourceTiles: true
+		}).then(res => 
+		{		
+			// loop all humans
+			for (var i = 0; i < this.humans.length; i++) {
+				var human = this.humans[i];
+				var tile = this.tiles[human.row * this.dimension[0] + human.col]
+				human.calculateEmotion(tile);
+			}
+		});
 	}
 }
