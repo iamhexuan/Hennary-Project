@@ -1,6 +1,7 @@
 import Phaser from 'phaser'
 
 import Level from './game/Level'
+import Person from './game/Person'
 import Tile from './game/Tile'
 export default class Play extends Phaser.State {
 
