@@ -1,21 +1,33 @@
 import Phaser from 'phaser'
 
-//import Controllers from 'Controllers'
-
-import { Tile } from 'Controllers'
-
 export default class Play extends Phaser.State {
-    create () {
-        // Add your game content here    
-        this.state.start('Controllers')  
-        
-        
-          
-        console.log('this', this, Tile)
-    
-    }
 
-    update () {
-        // Add your game logic here
-    }
+	create() {
+		this.counter = 0;
+		this.text = 0;
+
+		game.stage.backgroundColor = '#6688ee';
+
+		this.text = game.add.text(game.world.centerX, game.world.centerY, 'Counter: 0', { font: "64px Arial", fill: "#ffffff", align: "center" });
+		this.text.anchor.setTo(0.5, 0.5);
+
+		//  Here we'll create a basic looped event.
+		//  A looped event is like a repeat event but with no limit, it will literally repeat itself forever, or until you stop it.
+
+		//  The first parameter is how long to wait before the event fires. In this case 1 second (you could pass in 1000 as the value as well.)
+		//  The next two parameters are the function to call ('updateCounter') and the context under which that will happen.
+
+		game.time.events.loop(Phaser.Timer.SECOND, this.updateCounter, this);
+	}
+
+	updateCounter() {
+		// TODO call Level.timer()
+		this.counter++;
+		this.text.setText('Counter: ' + this.counter);
+	}
+	
+	render() {
+		game.debug.text("Time until event: " + game.time.events.duration.toFixed(0), 32, 32);
+		game.debug.text("Next tick: " + game.time.events.next.toFixed(0), 32, 64);
+	}
 }
