@@ -4,6 +4,7 @@ export default class Tile {
         col = -1, 
         type = '', 
         permeability = 1, 
+        signalStrength = 0,
         id = ''
     } = {}) {
         this.row = row;
@@ -11,7 +12,7 @@ export default class Tile {
         this.type = type;
         this.permeability = permeability;
         this.id = id;
-        this.signalStrength = 0;
+        this.signalStrength = signalStrength;
     }
     
     // for test only 
@@ -83,7 +84,19 @@ export default class Tile {
         })
     }
     
-
+    
+    getStrength({row = -1, col = -1, tiles = []} = {}){
+        if (row < 0 && col < 0) return this.signalStrength
+        
+        const tile = this.getTileAtPosition({
+            tiles : tiles,
+            row : row,
+            col : col,
+        })
+        if (!tile) return 0
+        return (!!tile.signalStrength) ? tile.signalStrength : 0
+    },
+    
     // @param { Array } tiles of tile
     
     /* 
