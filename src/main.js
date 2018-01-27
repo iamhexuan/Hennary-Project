@@ -9,7 +9,6 @@ import Play from './states/Play'
 class Game extends Phaser.Game {
   constructor () {
     super(1024, 768, Phaser.AUTO, 'game')
-
     this.state.add('Boot', Boot)
     this.state.add('Preloader', Preloader)
     this.state.add('Play', Play)
