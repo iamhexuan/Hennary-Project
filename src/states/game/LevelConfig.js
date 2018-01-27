@@ -13,7 +13,7 @@ export default class LevelConfig {
 					new Tile(1, 1, tileTypes.FLOOR, 1, 1)
 				],
 				deviceStock:[
-					[new Device(1, 'Router', ), 3]
+					[new Device(1, 'Router', deviceTypes.ROUTER), 3]
 				],
 				humanStock:[
 					new Person(0,0, 0,10,20,1000,'Boy',1),
