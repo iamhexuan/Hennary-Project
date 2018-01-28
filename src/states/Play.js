@@ -255,7 +255,7 @@ export default class Play extends Phaser.State {
 		var col = item.x / size;
 		var tile = this.level.tiles[row * this.level.dimension[1] + col]
 		console.log('on floor check', row, col, tile)
-		if (tile.type != tileTypes.FLOOR) {
+		if (tile && tile.type != tileTypes.FLOOR) {
 			item.x = item.init_x;
 			item.y = item.init_y;
 		}
