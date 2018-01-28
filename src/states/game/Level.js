@@ -1,5 +1,7 @@
 import LevelConfig from "./LevelConfig"
 import Tile from "./Tile"
+import Device from "./Device"
+
 export default class Level {
 	constructor({
     	levelNumber = 0, 
@@ -53,7 +55,9 @@ export default class Level {
 		}
 
 		walls.forEach(function(item){
-			tiles[item.row * dimension[0] + item.col] = item;
+			//var old = tiles[item.row * dimension[1] + item.col]
+			//console.log('walls.forEach', old.row, old.col, item.row, item.col)
+			tiles[item.row * dimension[1] + item.col] = item;
 		})
 		return tiles;
 	}
@@ -98,12 +102,18 @@ export default class Level {
 	
 	onDragStop(container) {
 		this.emitters = [];
+		var size = global.size;
+		
 		for (var i = 0; i < container.length; i++) {
 			var item = container[i];
+			//console.log('emitter', i, item.data, item.x, item.y, item.init_x, item.init_y)
 			if (item.x != item.init_x || item.y != item.init_y) {
-				this.emitters.push(item.data);
+				var device = new Device(item.data);
+				device.setPosition(item.y/size, item.x/size);
+				this.emitters.push(device);
 			}
 		}
+		//console.log('emitters', this.emitters)
 
 		// loop all tiles
 		var a = new Tile()
@@ -118,7 +128,7 @@ export default class Level {
 			// loop all humans
 			for (var i = 0; i < this.humans.length; i++) {
 				var human = this.humans[i];
-				var tile = this.tiles[human.row * this.dimension[0] + human.col]
+				var tile = this.tiles[human.row * this.dimension[1] + human.col]
 				human.calculateEmotion(tile);
 			}
 		});
