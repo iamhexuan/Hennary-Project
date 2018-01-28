@@ -38,7 +38,7 @@ export default class Play extends Phaser.State {
 		
 		// load hud
 		for (var i = 0; i < 3; i++) {
-			imagePath = 'assets/images/hud';
+			imagePath = 'assets/images/hud/';
 			imageName = 'money_' + (i + 1) + '.png';
 			console.log(imagePath + imageName)
 			game.load.image(imageName, imagePath + imageName);
@@ -131,10 +131,11 @@ export default class Play extends Phaser.State {
 		}
 		this.addImageGroup(deviceImgsLocked);
 		this.addImageGroup(deviceImgs, true);
-		
+
 		this.groupTop = game.add.group();
 		game.world.bringToTop(this.groupTop);
 	}
+
 	
 	addImageGroup(array, enableDrag = false, container = []) {
 		var imageName, item;

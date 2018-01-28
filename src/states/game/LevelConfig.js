@@ -107,7 +107,7 @@ export default class LevelConfig {
     				}),
 				],
 				cash: 100,
-				goal: 1000
+				goal: 200
 			},
 			2: {
     			levelNumber: 2,

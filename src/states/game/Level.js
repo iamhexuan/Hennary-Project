@@ -1,6 +1,7 @@
 import LevelConfig from "./LevelConfig"
 import Tile from "./Tile"
 import Device from "./Device"
+import HealthBar from 'phaser-percent-bar'
 
 export default class Level {
 	constructor({
@@ -33,16 +34,21 @@ export default class Level {
 	initCashSprite(){
 		this.hud = game.add.group();
 		this.hud.create(0,0,'money_3.png');
+
 		this.moneyBar = game.add.sprite(0,0,'money_2.png');
-		this.hud.add(this.moneyBar);
+		this.moneyBar.health = 0
+		this.moneyBar.maxHeath = this.moneyBar.width;
+
 		this.hud.create(0,0,'money_1.png');
 
-		this.moneyBar.initialWidth = this.moneyBar.width;
-		this.updateCashSprite();
+		game.add.existing(new HealthBar({
+			game: game,
+			host: this.moneyBar
+		}))
 	}
 
 	updateCashSprite() {
-		this.moneyBar.width = Math.random() * 500;
+		this.moneyBar.health = Math.random() * 100;
 
 	}
 
