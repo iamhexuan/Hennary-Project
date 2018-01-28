@@ -274,11 +274,8 @@ export default class LevelSelector {
     unloadAllLevelsOnStage(){
         this.currentLevelNumber = NaN
         this.LevelNumbersOnStage = []
-        if (!!this.stageSpriteGroup && Array.isArray(this.stageSpriteGroup.children)){
-            this.stageSpriteGroup.children.forEach((sprite) => {
-                sprite.destroy()
-            })
-            this.stageSpriteGroup.children = []
+        if (!!this.stageSpriteGroup){
+            this.stageSpriteGroup.callAll('kill')
         }
         
         this.previousLevelNumberOutOfStage =  NaN
