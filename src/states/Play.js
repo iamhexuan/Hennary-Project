@@ -13,7 +13,7 @@ export default class Play extends Phaser.State {
 	preload() {
 		var imagePath, imageName, imageId;
 		// load wall image
-		for (var i = 0; i < 15; i++) {
+		for (var i = 0; i < 16; i++) {
 			imagePath = 'assets/images/wall/';
 			imageName = 'wall_' + (i) + '.png';
 			console.log(imagePath + imageName)
@@ -56,7 +56,7 @@ export default class Play extends Phaser.State {
         
         tile.runTileTests()
         
-		game.stage.backgroundColor = '#6688ee';
+		game.stage.backgroundColor = '#ffffff';
 
 		this.text = game.add.text(game.world.centerX, game.world.centerY, 'Counter: 0', { font: "64px Arial", fill: "#ffffff", align: "center" });
 		this.text.anchor.setTo(0.5, 0.5);
@@ -153,20 +153,24 @@ export default class Play extends Phaser.State {
 	}
 
 	
-	addImageGroup(array, enableDrag = false, container = []) {
+	addImageGroup(array, enableDrag = false, container = [], imageName=null) {
 		var imageName, item;
 		var group = game.add.group();
 		
 		for (var i = 0; i < array.length; i++) {
 			var obj = array[i];
-			item = group.create(size * obj.col, size * obj.row, obj.getSpriteString());
+			item = group.create(size * obj.col, size * obj.row, imageName ? imageName : obj.getSpriteString());
 			item.init_x = item.x
 			item.init_y = item.y
 			item.index = i
 			item.data = array[i]
 
 			container.push(item);
-
+			
+			if (imageName) {
+				item.alpha = 0
+			}
+			
 			if (enableDrag) {
 				// Enable input detection, then it's possible be dragged.
 				item.inputEnabled = true;
@@ -178,20 +182,19 @@ export default class Play extends Phaser.State {
 				// use group to handle zIndex
 				item.events.onDragStart.add(item => {
 					this.groupTop.add(item)
-					this.dragFrom = {x:item.x, y:item.y}
 				});
 				// Limit drop location
 				item.events.onDragStop.add(item => {
     				console.log('item', item)
 					this.groupTop.removeAll();
 					group.add(item);
-					this.updateSignalStrength(item, container, this.dragFrom, this.deviceText)
+					this.updateSignalStrength(item, container, this.deviceText)
 				});
 			}
 		}
 	}
 	
-	updateSignalStrength(item, container=[], dragFrom={}, deviceText=[]) {
+	updateSignalStrength(item, container=[], deviceText=[]) {
 		// TODO revert action when dropped at invalid position
 		// TODO update signal strength for all tiles
 		console.log('item.x', item.x, 'item.y', item.y, 'item.init_x', item.init_x, 'item.init_y', item.init_y, 'container.length', container.length)
@@ -232,6 +235,25 @@ export default class Play extends Phaser.State {
 		}
 		
 		this.level.onDragStop(container);
+		
+		if (!this.signals) {
+			this.signals = []
+			this.addImageGroup(this.level.tiles, false, this.signals, 'wall_15.png');
+		}
+		if (!this.maxSignal) {
+			this.maxSignal = 0
+			for (var i = 0; i < this.level.deviceStock.length; i++) {
+				var signal = this.level.deviceStock[i][0].strength
+				console.log('max signal', this.maxSignal, signal)
+				if (signal > this.maxSignal) {
+					this.maxSignal = signal;
+				}
+			}
+		}
+		for (var i = 0; i < this.signals.length; i++) {
+			item = this.signals[i];
+			game.add.tween(item).to( { alpha: item.data.signalStrength / this.maxSignal * maxAlpha }, 0, Phaser.Easing.Linear.None, true)
+		}
 	}
 
 	updateCounter() {
