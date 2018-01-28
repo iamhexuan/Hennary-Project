@@ -11,6 +11,7 @@ export default class Level {
     	thumbnailSize = [500, 400],
     	isLocked = false,
     } = {}) {
+        this.moneybar = undefined
 		let config = new LevelConfig().getConfig(levelNumber);
 		this.levelNumber = levelNumber;
 		this.humans = config.humanStock;
@@ -26,7 +27,7 @@ export default class Level {
 		}
 		this.isLocked = isLocked
 		this.dimension = config.dimension
-		this.initCashSprite();
+		// this.initCashSprite();
 	}
 
 
@@ -34,15 +35,17 @@ export default class Level {
 		this.hud = game.add.group();
 		this.hud.create(0,0,'money_3.png');
 
-		this.moneyBar = game.add.sprite(0,0,'money_2.png');
-		this.moneyBar.maxHeath = this.moneyBar.width;
+		if (!this.moneyBar) this.moneyBar = game.add.sprite(0,0,'money_2.png');
+		this.moneyBar.maxHealth = this.moneyBar.width;
 		this.hud.add(this.moneyBar)
 
 		this.hud.create(0,0,'money_1.png');
 	}
 
-	updateCashSprite() {
-		this.moneyBar.width = Math.random() * 100;
+	updateCashSprite(){
+    	if (!!this.moneyBar)
+    	   // game.add.tween(this.moneyBar).to( { angle: 45 }, 2000, Phaser.Easing.Linear.None, true);
+    	    game.add.tween(this.moneyBar.scale).to( { x: Math.random(), y: 1 }, 0, Phaser.Easing.Linear.None, true)
 	}
 
 	getTiles(dimension, walls){
