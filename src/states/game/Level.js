@@ -32,15 +32,17 @@ export default class Level {
 
 
 	initCashSprite(){
+		var h_offset = 210
+		var v_offset = size * 9
 		this.hud = game.add.group();
-		this.hud.create(0,0,'money_3.png');
+		this.hud.create(h_offset, v_offset,'money_3.png');
 
-		if (!this.moneyBar) this.moneyBar = game.add.sprite(0,0,'money_2.png');
+		if (!this.moneyBar) this.moneyBar = game.add.sprite(h_offset, v_offset,'money_2.png');
 		this.moneyBar.scale.x = (this.cash / this.goal) / (15 / 13);
 		this.moneyBar.maxWidth = this.moneyBar.width;
 		this.hud.add(this.moneyBar)
 
-		this.hud.create(0,0,'money_1.png');
+		this.hud.create(h_offset, v_offset,'money_1.png');
 		
 		// init emotion
 		this.onDragStop([])

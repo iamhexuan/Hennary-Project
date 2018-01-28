@@ -65,8 +65,8 @@ export default class Play extends Phaser.State {
         
 		game.stage.backgroundColor = '#f0f0f0';
 
-		this.text = game.add.text(game.world.centerX, game.world.centerY, 'Counter: 0', { font: "64px Arial", fill: "#ffffff", align: "center" });
-		this.text.anchor.setTo(0.5, 0.5);
+		//this.text = game.add.text(game.world.centerX, game.world.centerY, 'Counter: 0', { font: "64px Arial", fill: "#ffffff", align: "center" });
+		//this.text.anchor.setTo(0.5, 0.5);
 
 		//  Here we'll create a basic looped event.
 		//  A looped event is like a repeat event but with no limit, it will literally repeat itself forever, or until you stop it.
@@ -276,7 +276,7 @@ export default class Play extends Phaser.State {
 	updateCounter() {
 		this.level.timer();
 		this.counter++;
-		this.text.setText('Counter: ' + this.counter);
+		//this.text.setText('Counter: ' + this.counter);
 	}
 	
 	render() {
