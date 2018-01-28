@@ -311,6 +311,7 @@ export default class Tile {
         
         // y = grad * x + offset
         // row = grad * col + offset
+        // row = grad * col + offset
         if (emitter.row - row !== 0 && emitter.col - col !== 0){
             
             const grad = (emitter.row - row) / (emitter.col - col)
@@ -328,7 +329,7 @@ export default class Tile {
                 
                 const row_bounds = [_row - 0.5, _row + 0.5]
                 
-                const row_intercepts_at_cols = row_bounds.map(_r => (_r - offset) / grad).sort((a,b) => a - b)
+                const row_intercepts_at_cols = row_bounds.map(_r => (_r - offset) / grad).sort((a,b) => a - b) 
                 
                 for (let _col = col_range[0]; _col <= col_range[1]; _col++){
                     
@@ -346,7 +347,7 @@ export default class Tile {
                     
                     const tile_permeability = (!!_tile && typeof _tile.permeability !== 'undefined') ? _tile.permeability : 1
                     
-                    if (tile_permeability === 1) break; // no need do extra calculation
+                    // if (tile_permeability === 1) break; // no need do extra calculation
                     
                     
                                                                                                                     
@@ -354,13 +355,13 @@ export default class Tile {
                     
                     console.log('tile_permeability' ,tile_permeability, row_intercepts_at_cols, col_bounds)
                     
-                    const is_complete_pass = (
+                    const is_total_miss = (
                         col_bounds[1] < row_intercepts_at_cols[0] || 
-                        col_bounds[1] > row_intercepts_at_cols[0]
+                        col_bounds[0] > row_intercepts_at_cols[1]
                     )
                     
                     
-                    const is_total_miss = 
+                    const is_complete_pass = 
                         (
                             col_bounds[0] <= row_intercepts_at_cols[0] && 
                             col_bounds[1] >= row_intercepts_at_cols[1]
@@ -373,12 +374,12 @@ export default class Tile {
                         console.log('miss ray pass', tile_permeability, 'at', [_row, _col])
                         break; // no need do extra calculation 
                     }
-                        
                     if (is_complete_pass){
                         console.log('complete ray pass', tile_permeability, 'at', [_row, _col])
                         _blockers_perm.push(tile_permeability)
                     }else{
-                        console.log('intercept pass', tile_permeability, 'at', [_row, _col])
+                        _blockers_perm.push(tile_permeability)
+                        /*
                         let col_intercepts_at_rows = col_bounds
                             .map(_c => grad * _c + offset).sort((a,b) => a - b)
                             
@@ -391,6 +392,8 @@ export default class Tile {
                         let _row_inside_col_intercept = row_bounds
                              .filter(_r => _r > col_intercepts_at_rows[0] && _r < col_intercepts_at_rows[1])
                         
+                        console.log('_row_inside_col_intercept', _row_inside_col_intercept, row_bounds)
+                        
                         if (_row_inside_col_intercept.length > 0){
                            _row_inside_col_intercept = _row_inside_col_intercept[0] 
                         }else{
@@ -400,6 +403,8 @@ export default class Tile {
                         let _col_intercept_inside_row_bounds = col_intercepts_at_rows
                              .filter(_r => _r > row_bounds[0] && _r < row_bounds[1])
                         
+                        console.log('_col_intercept_inside_row_bounds', _col_intercept_inside_row_bounds)
+                        
                         if (_col_intercept_inside_row_bounds.length > 0){
                            _col_intercept_inside_row_bounds = _col_intercept_inside_row_bounds[0] 
                         }else{
@@ -407,9 +412,12 @@ export default class Tile {
                         }
                         
                        length = Math.abs(_col_intercept_inside_row_bounds - _row_inside_col_intercept) * length
-                        
+                       
+                       console.log('intercept pass', length, tile_permeability, 'at', [_row, _col])
+                       
                        if (length > 1) length = 1
-                       if (length > 0) _blockers_perm.push(tile_permeability / length)                         
+                       if (length > 0) _blockers_perm.push(tile_permeability / length)  
+                        */                       
                     }
                 } // end for
             } // end for
