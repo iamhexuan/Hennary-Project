@@ -47,9 +47,10 @@ export default class Play extends Phaser.State {
 			imageName = 'money_' + (i + 1) + '.png';
 			console.log(imagePath + imageName)
 			game.load.image(imageName, imagePath + imageName);
-			
 		}
-
+		imageName = 'side_menu.png';
+		game.load.image(imageName, imagePath + imageName);
+		
 		// for level images
 		
 		levelSelector.loadLevelSelector({ levelNumbers : [1,2,3] })
@@ -125,6 +126,9 @@ export default class Play extends Phaser.State {
     		this.addImageGroup(l.tiles)
     		this.addImageGroup(l.humans);
     		
+			// side menu
+			game.add.image(1024 - 210, 0, 'side_menu.png');
+			
     		// text
     		this.deviceText = [];
     		
@@ -142,15 +146,19 @@ export default class Play extends Phaser.State {
     			
     			img.setPosition(i + offset + 0.1, edge);
     			for (var j = 0; j < num; j++) {
-    				deviceImgs.push(img);	
+					console.log('img pos old', img.row, img.col)
+					img.col = (1024 - size*2)/size;
+					img.row = 1.2*(1.8+i);
+					console.log('img pos new', img.row, img.col)
+    				deviceImgs.push(img);
     			}
     			deviceImgsLocked.push(img);
     
-    			var text = game.add.text(size * (img.col + 1), size * (img.row + 0.5), 'x ' + num, { font: "32px Arial", fill: "#ffffff", align: "left" });
+    			var text = game.add.text(1024 - size, size*1.2*(1.8+i), 'x ' + num, { font: "32px Arial", fill: "#ffffff", align: "left" });
     			this.deviceText.push(text)
     			//this.text.anchor.setTo(0.5, 0.5);
     		}
-    		this.addImageGroup(deviceImgsLocked);
+    		//this.addImageGroup(deviceImgsLocked);
     		this.addImageGroup(deviceImgs, true);
     		
     		this.groupTop = game.add.group();
