@@ -3,7 +3,7 @@ import Device from "./Device"
 import Tile from "./Tile"
 
 export default class LevelConfig {
-	getConfig(levelNumber){
+	getConfig(level_number){
 		var config = {
 			1: {
 				dimension: [10, 12],
@@ -121,6 +121,6 @@ export default class LevelConfig {
                 ],
 			}
 		};
-		return config[levelNumber]; 
+		return config[level_number]; 
 	}
 }

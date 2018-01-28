@@ -5,6 +5,7 @@ export default class LevelSelector {
     constructor({
         currentLevelNumber = 0,
         loadedLevels = [],
+        onSelectLevel = val => val,
     } = {}){
         this.currentLevelNumber = currentLevelNumber
         this.loadedLevels = loadedLevels
@@ -12,6 +13,7 @@ export default class LevelSelector {
         this.LevelNumbersOnStage = []
         this.previousLevelNumberOutOfStage =  NaN
         this.nextLevelNumberOutOfStage =  NaN
+        this.onSelectLevel = onSelectLevel
     }
     
     //load image resources
@@ -114,9 +116,7 @@ export default class LevelSelector {
             pre_level_number = level_numbers[current_level_idx - 1]
         if (current_level_idx >= 0 && check_level(level_numbers[current_level_idx + 1])) 
            next_level_number = level_numbers[current_level_idx + 1]
-        
-        
-        
+                
         console.log('Level numbers: ', pre_level_number, next_level_number)
         
         const offset_x = 40
@@ -163,6 +163,8 @@ export default class LevelSelector {
     
     handleCurrentLevelClick(ev){
         console.log('clicked', this, ev)
+        this.onSelectLevel(ev)
+        // const event = new CustomEvent('level-select', ev)
     }
     
     moveLevelsSelector({

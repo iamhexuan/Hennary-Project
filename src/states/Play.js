@@ -81,6 +81,9 @@ export default class Play extends Phaser.State {
             currentLevelNumber: 1
         })
 		
+		levelSelector.onSelectLevel(ev => {
+    		console.log('onSelectLevel', ev)
+		})
 		
 		let l = ls[0]
 		
@@ -155,7 +158,7 @@ export default class Play extends Phaser.State {
     				console.log('item', item)
 					this.groupTop.removeAll();
 					group.add(item);
-					this.updateSignalStrength(item, container, this.dragFrom, this.deviceText);
+					this.updateSignalStrength(item, container, this.dragFrom, this.deviceText)
 				});
 			}
 		}

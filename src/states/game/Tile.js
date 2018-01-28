@@ -224,8 +224,10 @@ export default class Tile {
             console.log('%cupdatedTiles: ', 'background: blue;color:white;', updatedTiles)
             
             if (resolveSimplifiedObject){
+                console.log('resolve: ', updatedTileSingalStrength)
                 resolve(updatedTileSingalStrength)
             }else{
+                console.log('resolve: ', updatedTiles)
                 resolve(updatedTiles) 
             }
                            
