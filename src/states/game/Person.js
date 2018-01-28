@@ -64,7 +64,7 @@ export default class Person {
 		if (this.icon) {
 			this.icon.destroy();
 		}
-		this.icon = game.add.sprite(size * this.col, size * this.row + size/3, this.emotion + '.png');
+		this.icon = game.add.sprite(size * this.col + 60, size * this.row - 10, this.emotion + '.png');
 	}
 
 	movingPosition(){
