@@ -86,7 +86,7 @@ export default class LevelConfig {
     					id: 1
     				}),
     				new Person({
-    					row: 3,
+    					row: 4,
     					col: 6, 
     					low: 15,
     					midlow: 25,
