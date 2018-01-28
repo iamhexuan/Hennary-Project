@@ -6,8 +6,6 @@ import Tile from './game/Tile'
 import LevelSelector from './game/LevelSelector'
 import LevelConfig from './game/LevelConfig'
 
-var size = 75, edge = 8;
-
 var levelSelector = new LevelSelector()
 
 export default class Play extends Phaser.State {

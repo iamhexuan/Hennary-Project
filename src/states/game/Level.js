@@ -83,7 +83,6 @@ export default class Level {
 	
 	onDragStop(container) {
 		this.emitters = [];
-		var size = global.size;
 		
 		for (var i = 0; i < container.length; i++) {
 			var item = container[i];
