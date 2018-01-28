@@ -7,7 +7,7 @@ export default class LevelConfig {
 		var config = {
 			1: {
     			levelNumber: 1,
-				dimension: [10, 12],
+				dimension: [9, 11],
 				walls:[
 					new Tile({ row: 1, col: 1, type: tileTypes.WALL, permeability: 0, id: 1 }),
 					new Tile({ row: 1, col: 2, type: tileTypes.WALL, permeability: 0, id: 4 }),
@@ -86,7 +86,7 @@ export default class LevelConfig {
     					id: 1
     				}),
     				new Person({
-    					row: 3,
+    					row: 4,
     					col: 6, 
     					low: 15,
     					midlow: 25,

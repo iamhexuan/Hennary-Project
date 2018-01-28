@@ -47,9 +47,14 @@ export default class Play extends Phaser.State {
 			imageName = 'money_' + (i + 1) + '.png';
 			console.log(imagePath + imageName)
 			game.load.image(imageName, imagePath + imageName);
-			
 		}
-
+		imageName = 'side_menu.png';
+		game.load.image(imageName, imagePath + imageName);
+			
+		imagePath = 'assets/images/screen/';
+		imageName = 'title.png';
+		game.load.image(imageName, imagePath + imageName);
+		
 		// for level images
 		
 		levelSelector.loadLevelSelector({ levelNumbers : [1,2,3] })
@@ -65,8 +70,12 @@ export default class Play extends Phaser.State {
         
 		game.stage.backgroundColor = '#f0f0f0';
 
-		this.text = game.add.text(game.world.centerX, game.world.centerY, 'Counter: 0', { font: "64px Arial", fill: "#ffffff", align: "center" });
-		this.text.anchor.setTo(0.5, 0.5);
+		this.title = game.add.group()
+		this.title.create(0,0,'title.png');
+		game.world.sendToBack(this.title);
+
+		//this.text = game.add.text(game.world.centerX, game.world.centerY, 'Counter: 0', { font: "64px Arial", fill: "#ffffff", align: "center" });
+		//this.text.anchor.setTo(0.5, 0.5);
 
 		//  Here we'll create a basic looped event.
 		//  A looped event is like a repeat event but with no limit, it will literally repeat itself forever, or until you stop it.
@@ -114,6 +123,7 @@ export default class Play extends Phaser.State {
     		
     		this.level = l
     		
+			this.title.removeAll();
     		this.level.initCashSprite()
     		
     		levelSelector.unloadAllLevelsOnStage()
@@ -125,6 +135,9 @@ export default class Play extends Phaser.State {
     		this.addImageGroup(l.tiles)
     		this.addImageGroup(l.humans);
     		
+			// side menu
+			game.add.image(1024 - 210, 0, 'side_menu.png');
+			
     		// text
     		this.deviceText = [];
     		
@@ -142,15 +155,19 @@ export default class Play extends Phaser.State {
     			
     			img.setPosition(i + offset + 0.1, edge);
     			for (var j = 0; j < num; j++) {
-    				deviceImgs.push(img);	
+					console.log('img pos old', img.row, img.col)
+					img.col = (1018 - size*2)/size;
+					img.row = 1.25*(1.31+i);
+					console.log('img pos new', img.row, img.col)
+    				deviceImgs.push(img);
     			}
     			deviceImgsLocked.push(img);
     
-    			var text = game.add.text(size * (img.col + 1), size * (img.row + 0.5), 'x ' + num, { font: "32px Arial", fill: "#ffffff", align: "left" });
+    			var text = game.add.text(1024 - size, size*1.2*(1.8+i), 'x ' + num, { font: "32px Arial", fill: "#ffffff", align: "left" });
     			this.deviceText.push(text)
     			//this.text.anchor.setTo(0.5, 0.5);
     		}
-    		this.addImageGroup(deviceImgsLocked);
+    		//this.addImageGroup(deviceImgsLocked);
     		this.addImageGroup(deviceImgs, true);
     		
     		this.groupTop = game.add.group();
@@ -276,11 +293,11 @@ export default class Play extends Phaser.State {
 	updateCounter() {
 		this.level.timer();
 		this.counter++;
-		this.text.setText('Counter: ' + this.counter);
+		//this.text.setText('Counter: ' + this.counter);
 	}
 	
 	render() {
-		game.debug.text("Time until event: " + game.time.events.duration.toFixed(0), 32, 32);
-		game.debug.text("Next tick: " + game.time.events.next.toFixed(0), 32, 64);
+		//game.debug.text("Time until event: " + game.time.events.duration.toFixed(0), 32, 32);
+		//game.debug.text("Next tick: " + game.time.events.next.toFixed(0), 32, 64);
 	}
 }

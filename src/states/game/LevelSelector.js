@@ -136,9 +136,9 @@ export default class LevelSelector {
            next_level_number = level_numbers[current_level_idx + 1]
                 
         console.log('Level numbers: ', pre_level_number, next_level_number)
-        
+        const global_v_offset = 100;
         const offset_x = 40
-        const offset_v = 30
+        const offset_v = 30 + global_v_offset
         
         let pre_sprite, next_sprite
         
@@ -183,7 +183,7 @@ export default class LevelSelector {
             this.nextLevelNumberOutOfStage = NaN
         }
         
-        const current_sprite_props = [mid_width - th_width / 2, mid_height - th_height / 2, genLevelKey(currentLevelNumber)]
+        const current_sprite_props = [mid_width - th_width / 2, mid_height - th_height / 2 + global_v_offset, genLevelKey(currentLevelNumber)]
         
         const current_sprite_shadow = game.add.sprite(...current_sprite_props)
         const current_sprite = game.add.sprite(...current_sprite_props)
