@@ -36,7 +36,7 @@ export default class Level {
 		this.hud.create(0,0,'money_3.png');
 
 		if (!this.moneyBar) this.moneyBar = game.add.sprite(0,0,'money_2.png');
-		this.moneyBar.scale.x = 0;
+		this.moneyBar.scale.x = (this.cash / this.goal) / (15 / 13);
 		this.moneyBar.maxWidth = this.moneyBar.width;
 		this.hud.add(this.moneyBar)
 
