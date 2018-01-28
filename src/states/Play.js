@@ -50,6 +50,10 @@ export default class Play extends Phaser.State {
 		}
 		imageName = 'side_menu.png';
 		game.load.image(imageName, imagePath + imageName);
+			
+		imagePath = 'assets/images/screen/';
+		imageName = 'title.png';
+		game.load.image(imageName, imagePath + imageName);
 		
 		// for level images
 		
@@ -65,6 +69,10 @@ export default class Play extends Phaser.State {
         tile.runTileTests()
         
 		game.stage.backgroundColor = '#f0f0f0';
+
+		this.title = game.add.group()
+		this.title.create(0,0,'title.png');
+		game.world.sendToBack(this.title);
 
 		//this.text = game.add.text(game.world.centerX, game.world.centerY, 'Counter: 0', { font: "64px Arial", fill: "#ffffff", align: "center" });
 		//this.text.anchor.setTo(0.5, 0.5);
@@ -115,6 +123,7 @@ export default class Play extends Phaser.State {
     		
     		this.level = l
     		
+			this.title.removeAll();
     		this.level.initCashSprite()
     		
     		levelSelector.unloadAllLevelsOnStage()
@@ -288,7 +297,7 @@ export default class Play extends Phaser.State {
 	}
 	
 	render() {
-		game.debug.text("Time until event: " + game.time.events.duration.toFixed(0), 32, 32);
-		game.debug.text("Next tick: " + game.time.events.next.toFixed(0), 32, 64);
+		//game.debug.text("Time until event: " + game.time.events.duration.toFixed(0), 32, 32);
+		//game.debug.text("Next tick: " + game.time.events.next.toFixed(0), 32, 64);
 	}
 }
