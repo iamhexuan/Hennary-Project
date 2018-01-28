@@ -26,6 +26,23 @@ export default class Level {
 		}
 		this.isLocked = isLocked
 		this.dimension = config.dimension
+		this.initCashSprite();
+	}
+
+
+	initCashSprite(){
+		this.hud = game.add.group();
+		this.hud.create(0,0,'money_3.png');
+
+		this.moneyBar = game.add.sprite(0,0,'money_2.png');
+		this.moneyBar.maxHeath = this.moneyBar.width;
+		this.hud.add(this.moneyBar)
+
+		this.hud.create(0,0,'money_1.png');
+	}
+
+	updateCashSprite() {
+		this.moneyBar.width = Math.random() * 100;
 	}
 
 	getTiles(dimension, walls){
@@ -57,7 +74,8 @@ export default class Level {
 	}
 	
 	addCash(amount) {
-		this.cash += amount
+		this.cash += amount;
+		this.updateCashSprite();
 		//console.log('add cash', amount, this.cash)
 	}
 	

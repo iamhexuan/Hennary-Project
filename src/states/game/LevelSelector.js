@@ -11,6 +11,7 @@ export default class LevelSelector {
         this.loadedLevels = loadedLevels
         this.levelThumbnails = {}
         this.LevelNumbersOnStage = []
+        this.stageSpriteGroup
         this.previousLevelNumberOutOfStage =  NaN
         this.nextLevelNumberOutOfStage =  NaN
         this.onLevelSelect = onLevelSelect
@@ -18,6 +19,9 @@ export default class LevelSelector {
     
     //load image resources
     loadLevelSelector({ levels = [], levelNumbers = [] } = {}){
+        
+        if (!this.stageSpriteGroup) this.stageSpriteGroup = game.add.group()
+        
         const lvl_nums = Array.isArray(levelNumbers) && levelNumbers.length > 0 ?
             levelNumbers : levels.map(lvl => lvl.levelNumber).filter(num => typeof num !== 'undefined')
              
@@ -75,27 +79,39 @@ export default class LevelSelector {
         currentLevelNumber = -1,
         thumbnailSize = { width: 500, height: 300 },
         ignoreLoadedLevelsInClass = false,
+        unloadAllLevelsOnStage = false,
     } = {}){
         const width = (!!mainCanvas.width) ? mainCanvas.width : 1024
         const height = (!!mainCanvas.height) ? mainCanvas.height : 768
         
-        if (currentLevelNumber < 0) currentLevelNumber = this.currentLevel
+        console.log('drawLevelSelector init: ', arguments)
+        
+        if (unloadAllLevelsOnStage){
+            this.unloadAllLevelsOnStage()
+        }
+        
+        if (Number.isNaN(Number(currentLevelNumber)) || currentLevelNumber < 0){
+            currentLevelNumber = this.currentLevelNumber
+        }else{
+            this.currentLevelNumber = currentLevelNumber
+        }
+        
         
         const mid_width = width / 2
         const mid_height = height / 2
         
-        const levels_obj = levels.reduce((acc, lvl) => {
+        const levels_obj = (Array.isArray(levels)) ? levels.reduce((acc, lvl) => {
             if (typeof lvl.levelNumber !== 'undefined'){
                 acc[lvl.levelNumber] = lvl
             }
             return acc
-        }, {})
+        }, {}) : {}
         
         const all_level_numbers = levels.map(lvl => lvl.levelNumber).filter(num => typeof num !== 'undefined').sort((a,b) => a-b)
         
-        const level_numbers = (!ignoreLoadedLevelsInClass && Array.isArray(this.loadedLevels) && this.loadedLevels.length > 0) ? 
-            this.loadedLevels.sort((a,b) => a-b) : all_level_numbers
-            
+       // const level_numbers = (!ignoreLoadedLevelsInClass && Array.isArray(this.loadedLevels) && this.loadedLevels.length > 0) ? 
+         //   this.loadedLevels.sort((a,b) => a-b) : all_level_numbers
+         const  level_numbers = all_level_numbers  
         
         const currentLevel = levels_obj[currentLevelNumber]
         
@@ -108,7 +124,9 @@ export default class LevelSelector {
         
         let check_level = num => this.isLevelExist({levelNumber: num})
         
-        const current_level_idx = level_numbers.indexOf(currentLevelNumber)
+        const current_level_idx = all_level_numbers.indexOf(currentLevelNumber)
+        
+        const current_level_idx_at_all_levels = level_numbers.indexOf(currentLevelNumber)
         
         let pre_level_number, next_level_number
         
@@ -122,34 +140,63 @@ export default class LevelSelector {
         const offset_x = 40
         const offset_v = 30
         
+        let pre_sprite, next_sprite
+        
+        // previous level
         if (typeof pre_level_number !== 'undefined'){
-            game.add.sprite(
+            pre_sprite = game.add.sprite(
                 mid_width - th_width / 2 - thumbnailSize.width + offset_x, 
                 mid_height - th_height / 2 + offset_v, 
                 genLevelKey(pre_level_number)
             )
+            
+            this.stageSpriteGroup.add(pre_sprite)
+            
             this.LevelNumbersOnStage.push(pre_level_number)
+            
+            pre_sprite.data = level_config.getConfig(pre_level_number)
+            
+            this.previousLevelNumberOutOfStage = check_level(all_level_numbers[current_level_idx_at_all_levels - 2]) ? 
+                all_level_numbers[current_level_idx_at_all_levels - 2] : NaN    
+            
+        }else{
+            this.previousLevelNumberOutOfStage = NaN
         }
         
+        // next level
         if (typeof next_level_number !== 'undefined'){
-            game.add.sprite(
+            next_sprite = game.add.sprite(
                 mid_width - th_width / 2 + thumbnailSize.width - offset_x, 
                 mid_height - th_height / 2 + offset_v, 
                 genLevelKey(next_level_number)
             )
+            
+            this.stageSpriteGroup.add(next_sprite)
+            
             this.LevelNumbersOnStage.push(next_level_number)
+            
+            next_sprite.data = level_config.getConfig(next_level_number)
+            
+            this.nextLevelNumberOutOfStage = check_level(all_level_numbers[current_level_idx_at_all_levels + 2]) ? 
+                all_level_numbers[current_level_idx_at_all_levels + 2] : NaN
+        }else{
+            this.nextLevelNumberOutOfStage = NaN
         }
         
         const current_sprite_props = [mid_width - th_width / 2, mid_height - th_height / 2, genLevelKey(currentLevelNumber)]
         
-        const shadow = game.add.sprite(...current_sprite_props)
+        const current_sprite_shadow = game.add.sprite(...current_sprite_props)
         const current_sprite = game.add.sprite(...current_sprite_props)
+        
+        this.stageSpriteGroup.add(current_sprite_shadow)
+        this.stageSpriteGroup.add(current_sprite)
+        
         
         current_sprite.data = level_config.getConfig(currentLevelNumber)
         
-        shadow.anchor.set(-0.02)
-        shadow.tint = 0x000000
-        shadow.alpha = 0.6
+        current_sprite_shadow.anchor.set(-0.02)
+        current_sprite_shadow.tint = 0x000000
+        current_sprite_shadow.alpha = 0.6
         
         this.LevelNumbersOnStage.push(currentLevelNumber)
         
@@ -157,18 +204,53 @@ export default class LevelSelector {
         
         current_sprite.inputEnabled = true
         
-        current_sprite.events.onInputDown.add(this.handleCurrentLevelClick, this)
+        current_sprite.events.onInputDown.add(this.handleCurrentLevelClick, this);
         
+        [pre_sprite, next_sprite].forEach(sprite => {
+            if (!!sprite){
+                sprite.inputEnabled = true
+                sprite.events.onInputDown.add(ev => this.handleOtherLevelClick(ev, arguments[0]), this)
+            }
+        })
+        
+        console.log('draw level: ',this)
     }
     
     handleCurrentLevelClick(ev){
-        console.log('clicked', this, ev)
+        console.log('clicked current level', this, ev)
         this.onLevelSelect(ev.data)
         // const event = new CustomEvent('level-select', ev)
     }
     
+    handleOtherLevelClick(ev, args){
+        
+        // this.onLevelSelect(ev.data)
+        // const event = new CustomEvent('level-select', ev)
+        let lvl_num = (!!ev.key) ? ev.key.split('_').pop() : NaN
+        console.log(lvl_num)
+        if (!Number.isNaN(lvl_num) && !!lvl_num || lvl_num === 0){
+            lvl_num = Number(lvl_num)
+        }else{
+            return
+        }
+        
+        if (Number.isNaN(lvl_num)) return
+        
+        console.log('clicked other level', lvl_num, this, ev)
+        
+        this.drawLevelSelector({ 
+            mainCanvas : args.mainCanvas, 
+            levels : args.levels, 
+            currentLevelNumber : lvl_num,
+            thumbnailSize : args.thumbnailSize,
+            ignoreLoadedLevelsInClass: false,
+            unloadAllLevelsOnStage : true,
+        })
+    }
+    
+    // NOT IMPLEMENTED
     moveLevelsSelector({
-        direction = 'right', 
+        toLevelNumber = -1, 
         levels = [], 
         levelNumbersOnStage = [],
         currentLevelNumber = -1,
@@ -182,7 +264,22 @@ export default class LevelSelector {
         
         if (currentLevelNumber < -1) currentLevelNumber = this.currentLevelNumber
         
-        const lvl_nums_incr = "direction === 'right'" ? 1 : -1        
+        this.drawLevelSelector({
+            
+        })
+        
+               
+    }
+    
+    unloadAllLevelsOnStage(){
+        this.currentLevelNumber = NaN
+        this.LevelNumbersOnStage = []
+        if (!!this.stageSpriteGroup){
+            this.stageSpriteGroup.callAll('kill')
+        }
+        
+        this.previousLevelNumberOutOfStage =  NaN
+        this.nextLevelNumberOutOfStage =  NaN
     }
     
     getSpriteKeyOnLevelNumber(num){
