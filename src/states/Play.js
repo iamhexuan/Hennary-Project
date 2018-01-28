@@ -36,6 +36,15 @@ export default class Play extends Phaser.State {
 			game.load.image(imageName, imagePath + imageName, 75, 75);
 		}
 		
+		// load hud
+		for (var i = 0; i < 3; i++) {
+			imagePath = 'assets/images/hud';
+			imageName = 'money_' + (i + 1) + '.png';
+			console.log(imagePath + imageName)
+			game.load.image(imageName, imagePath + imageName);
+			
+		}
+
 		// for level images
 		
 		levelSelector.loadLevelSelector({ levelNumbers : [1,2,3] })
