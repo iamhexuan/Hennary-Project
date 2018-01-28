@@ -33,6 +33,13 @@ export default class Play extends Phaser.State {
 			console.log(imagePath + imageName)
 			game.load.image(imageName, imagePath + imageName, 75, 75);
 		}
+		// load human emotions	
+		for (var emotion in personEmotions) {
+			imagePath = 'assets/images/emotion/';
+			imageName = emotion.toLowerCase() + '.png';
+			console.log(imagePath + imageName)
+			game.load.image(imageName, imagePath + imageName);
+		}
 		
 		// load hud
 		for (var i = 0; i < 3; i++) {
