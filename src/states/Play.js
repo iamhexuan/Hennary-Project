@@ -230,7 +230,7 @@ export default class Play extends Phaser.State {
 		var type = item.data.type - 1;
 		
 		// check if inside map
-		if (item.x >= size * edge) {
+		if (item.x >= size * this.level.dimension[1]) {
 			item.x = item.init_x;
 			item.y = item.init_y;
 		} else {		
