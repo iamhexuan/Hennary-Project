@@ -58,7 +58,7 @@ export default class LevelConfig {
         					id: 1,
         					name: 'Router', 
         					type: deviceTypes.ROUTER, 
-        					strength: 50, 
+        					strength: 40, 
         					triggerStrength: 0
         				}),
     					3
@@ -68,46 +68,46 @@ export default class LevelConfig {
         					id: 2,
         					name: 'Relay', 
         					type: deviceTypes.RELAY, 
-        					strength: 50, 
-        					triggerStrength: 20
+        					strength: 30, 
+        					triggerStrength: 10
         				}),
         				2
                     ]
 				],
 				humanStock:[
 					new Person({
-    					row: 0,
-    					col: 0, 
-    					low: 0,
-    					midlow: 10,
-    					midhigh:20,
+    					row: 5,
+    					col: 6, 
+    					low: 15,
+    					midlow: 25,
+    					midhigh:30,
     					high: 1000,
     					type: 'Boy',
     					id: 1
     				}),
     				new Person({
-    					row: 0,
-    					col: 1, 
-    					low: 0,
-    					midlow: 10,
-    					midhigh:20,
+    					row: 3,
+    					col: 6, 
+    					low: 15,
+    					midlow: 25,
+    					midhigh:30,
     					high: 1000,
     					type: 'Boy',
     					id: 2
     				}),
     				new Person({
-    					row: 1,
-    					col: 0, 
-    					low: 0,
-    					midlow: 10,
-    					midhigh:20,
+    					row: 7,
+    					col: 2, 
+    					low: 15,
+    					midlow: 25,
+    					midhigh:30,
     					high: 1000,
     					type: 'Boy',
     					id: 3
     				}),
 				],
-				cash: 100,
-				goal: 200
+				cash: 0,
+				goal: 1000
 			},
 			2: {
     			levelNumber: 2,

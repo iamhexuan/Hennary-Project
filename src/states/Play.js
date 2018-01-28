@@ -33,6 +33,13 @@ export default class Play extends Phaser.State {
 			console.log(imagePath + imageName)
 			game.load.image(imageName, imagePath + imageName, 75, 75);
 		}
+		// load human emotions	
+		for (var emotion in personEmotions) {
+			imagePath = 'assets/images/emotion/';
+			imageName = emotion.toLowerCase() + '.png';
+			console.log(imagePath + imageName)
+			game.load.image(imageName, imagePath + imageName);
+		}
 		
 		// load hud
 		for (var i = 0; i < 3; i++) {
@@ -113,6 +120,10 @@ export default class Play extends Phaser.State {
     		
     		edge = 11
     		// TODO draw sprites
+
+			this.signals = []
+			this.addImageGroup(this.level.tiles, false, this.signals, 'wall_15.png');
+			
     		this.addImageGroup(l.tiles)
     		this.addImageGroup(l.humans);
     		
@@ -238,10 +249,6 @@ export default class Play extends Phaser.State {
 		
 		this.level.onDragStop(container);
 		
-		if (!this.signals) {
-			this.signals = []
-			this.addImageGroup(this.level.tiles, false, this.signals, 'wall_15.png');
-		}
 		if (!this.maxSignal) {
 			this.maxSignal = 0
 			for (var i = 0; i < this.level.deviceStock.length; i++) {

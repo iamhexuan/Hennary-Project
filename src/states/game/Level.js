@@ -36,16 +36,25 @@ export default class Level {
 		this.hud.create(0,0,'money_3.png');
 
 		if (!this.moneyBar) this.moneyBar = game.add.sprite(0,0,'money_2.png');
-		this.moneyBar.maxHealth = this.moneyBar.width;
+		this.moneyBar.scale.x = (this.cash / this.goal) / (15 / 13);
+		this.moneyBar.maxWidth = this.moneyBar.width;
 		this.hud.add(this.moneyBar)
 
 		this.hud.create(0,0,'money_1.png');
+		
+		// init emotion
+		this.onDragStop([])
 	}
 
 	updateCashSprite(){
-    	if (!!this.moneyBar)
-    	   // game.add.tween(this.moneyBar).to( { angle: 45 }, 2000, Phaser.Easing.Linear.None, true);
-    	    game.add.tween(this.moneyBar.scale).to( { x: Math.random(), y: 1 }, 0, Phaser.Easing.Linear.None, true)
+		var newWidth;
+    	if (!!this.moneyBar){
+    		var newScale = (this.cash / this.goal) / (15 / 13);
+    		if(newScale > 1){
+				newScale = 1;
+			}
+    	    game.add.tween(this.moneyBar.scale).to( { x: newScale, y: 1 }, 0, Phaser.Easing.Linear.None, true)
+    	}
 	}
 
 	getTiles(dimension, walls){

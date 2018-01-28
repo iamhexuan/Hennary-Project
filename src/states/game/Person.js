@@ -54,12 +54,17 @@ export default class Person {
 
 	calculateEmotion(tile){
 		var strength = tile.getStrength();
-		if(strength < this.low) this.emotion = "unhappy"
-			else if(strength < this.midlow) this.emotion = "netural"
-				else if(strength < this.midhigh) this.emotion = "happy"
-					else if(strength < this.high) this.emotion = "netural"
-						else this.emotion = "unhappy"
+		if(strength < this.low) this.emotion = personEmotions.UNHAPPY
+			else if(strength < this.midlow) this.emotion = personEmotions.NEUTRAL
+				else if(strength < this.midhigh) this.emotion = personEmotions.HAPPY
+					else if(strength < this.high) this.emotion = personEmotions.NEUTRAL
+						else this.emotion = personEmotions.UNHAPPY
 		console.log('emotion', this.emotion);
+		
+		if (this.icon) {
+			this.icon.destroy();
+		}
+		this.icon = game.add.sprite(size * this.col + 60, size * this.row - 10, this.emotion + '.png');
 	}
 
 	movingPosition(){
