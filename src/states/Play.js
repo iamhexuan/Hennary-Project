@@ -113,6 +113,10 @@ export default class Play extends Phaser.State {
     		
     		edge = 11
     		// TODO draw sprites
+
+			this.signals = []
+			this.addImageGroup(this.level.tiles, false, this.signals, 'wall_15.png');
+			
     		this.addImageGroup(l.tiles)
     		this.addImageGroup(l.humans);
     		
@@ -238,10 +242,6 @@ export default class Play extends Phaser.State {
 		
 		this.level.onDragStop(container);
 		
-		if (!this.signals) {
-			this.signals = []
-			this.addImageGroup(this.level.tiles, false, this.signals, 'wall_15.png');
-		}
 		if (!this.maxSignal) {
 			this.maxSignal = 0
 			for (var i = 0; i < this.level.deviceStock.length; i++) {
