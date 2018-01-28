@@ -76,7 +76,7 @@ export default class Tile {
                 _tiles.push({
                     row: r,
                     col: c,
-                    permeability: (!!pm[r] && !!pm[r][c]) ? pm[r][c] : 0,
+                    permeability: (!!pm[r] && !!pm[r][c]) ? pm[r][c] : 1,
                 })
             }
         }
@@ -202,14 +202,16 @@ export default class Tile {
                 }
             }) // end emitters.forEach (first round)
             
+            console.log('second_round_emitters:', second_round_emitters)
             second_round_emitters.forEach(emitter => {
-                let tilesWithNewSingleStrength = this.loopTilesForSignalStrength({
+                console.log('loop relay')
+                let _tilesWithNewSingleStrength = this.loopTilesForSignalStrength({
                     canvas: canvas,
                     emitter: emitter,
                     tiles: tiles,
-                    currentTileSingleStrength: updatedTileSingalStrength,
+                    currentTilesSignalStrength : updatedTileSingalStrength,
                 })
-                updateTileSingalStrength(tilesWithNewSingleStrength)
+                updateTileSingalStrength(_tilesWithNewSingleStrength)
             })
             
             console.log('%cupdatedTileSingalStrength: ', 'background: orange;color:white;', updatedTileSingalStrength)
@@ -246,7 +248,7 @@ export default class Tile {
         currentTilesSignalStrength = {}, // updatedTileSingalStrength 
     }){
         const [rows, cols] = [canvas.rows, canvas.cols]
-        
+        console.log('loopTilesForSignalStrength', arguments)
         let tilesWithNewSingleStrength = {}
         
         for (let row = 0; row < rows; row++){
@@ -261,10 +263,12 @@ export default class Tile {
                     !!currentTilesSignalStrength &&
                     !!currentTilesSignalStrength[row] && 
                     !!currentTilesSignalStrength[row][col] && 
-                    currentTilesSignalStrength[row][col] >= rawSignalStrength
+                    currentTilesSignalStrength[row][col] >= emitter.triggerStrength
                 )
-                                  
-                if (is_triggerred){                                
+                 
+                console.log('is triggerred: ', is_triggerred, (!!currentTilesSignalStrength && !!currentTilesSignalStrength[row]) ? !!currentTilesSignalStrength[row][col] : 'no current signal strength at: ', [row, col])                 
+                if (is_triggerred){   
+                                                 
                     // @return [ permeability * length ]
                     const blocker_permeabilities = this.getBlockersPermeabilityOfATileFromAEmitter({
                         tiles: tiles,
@@ -336,6 +340,8 @@ export default class Tile {
                     
                     if (!_tile){
                         console.warn(`'unable to get tile at position: row: ${_row}, col: ${_col}`)
+                    }else{
+                        // console.log('perm: ', _tile.permeability, [_row, _col])
                     }
                     
                     const tile_permeability = (!!_tile && typeof _tile.permeability !== 'undefined') ? _tile.permeability : 1
@@ -361,7 +367,8 @@ export default class Tile {
                         )
                         
                     if (is_complete_pass){
-                        _blockers.push(tile_permeability)
+                        console.log('complete ray pass', tile_permeability, 'at', [_row, _col])
+                        _blockers_perm.push(tile_permeability)
                     }else{
                         let col_intercepts_at_rows = col_bounds
                             .map(_c => grad * _c + offset).sort((a,b) => a - b)
@@ -393,10 +400,10 @@ export default class Tile {
                        length = Math.abs(_col_intercept_inside_row_bounds - _row_inside_col_intercept) * length
                         
                        if (length > 1) length = 1
-                       if (length > 0) _blockers.push(tile_permeability / length)                         
+                       if (length > 0) _blockers_perm.push(tile_permeability / length)                         
                     }
-                }
-            }
+                } // end for
+            } // end for
                                                     
             return _blockers_perm
             
@@ -409,18 +416,19 @@ export default class Tile {
             const row_bound = [emitter.row, row].sort((a,b) => a - b)
             let _blockers = []
             for (let _row = row_bound[0]; _row <= row_bound[1]; _row++){
-                const _tile = this.getTileAtPosition({
-                    tiles : tiles,
-                    row : _row,
-                    col : _col,
-                })
-                if (_row !== emitter.row && _col !== emitter.col){
-                    _blockers.push(tile)
+                if (_row !== emitter.row){
+                    const _tile = this.getTileAtPosition({
+                        tiles : tiles,
+                        row : _row,
+                        col : _col,
+                    })
+                    _blockers.push(_tile)
                 }
             }
+            console.log('same col case:', row_bound, _blockers)
             return _blockers
                 .map(_blk_tile => _blk_tile.permeability)
-                .filter(pm => typeof pm === 'number' && !Number.isNaN(pm) && pm !== 1)
+                .filter(pm => typeof pm === 'number' && !Number.isNaN(pm) && pm < 1)
         }                                       
             
         // x = x_val    
@@ -431,19 +439,22 @@ export default class Tile {
             let _blockers = []
             
             for (let _col = col_bound[0]; _col <= col_bound[1]; _col++){
-                const _tile = this.getTileAtPosition({
-                    tiles : tiles,
-                    row : _row,
-                    col : _col,
-                })
-                if (_row !== emitter.row && _col !== emitter.col){
-                    _blockers.push(tile)
+                if (_col !== emitter.col){
+                    const _tile = this.getTileAtPosition({
+                        tiles : tiles,
+                        row : _row,
+                        col : _col,
+                    })
+                    _blockers.push(_tile)
                 }
             }
+            console.log('same row case:',col_bound, _blockers)
             return _blockers
                 .map(_blk_tile => _blk_tile.permeability)
-                .filter(pm => typeof pm === 'number' && !Number.isNaN(pm) && pm !== 1)
+                .filter(pm => typeof pm === 'number' && !Number.isNaN(pm) && pm < 1)
         }
+        
+        console.error('getBlockersPermeabilityOfATileFromAEmitter: not fullfill any condition.', [row,col], emitter)
         
         return []                                   
         
@@ -501,7 +512,9 @@ export default class Tile {
     } = {}){
         if (distance === 0) return rawSignalValue
         if (coefficient === 0) return 0
-        
+        if (permeabilities.length > 0){
+            console.log('%cHas permeabilities!', 'color: red; font-size: 18px;', rawSignalValue, distance)
+        }
         // will be a value between 0 and 1
         const agg_perm = (Array.isArray(permeabilities) && permeabilities.length > 0) ? (
             permeabilities.reduce((ttl, num) => {

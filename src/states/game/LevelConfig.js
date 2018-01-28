@@ -68,8 +68,8 @@ export default class LevelConfig {
         					id: 2,
         					name: 'Relay', 
         					type: deviceTypes.RELAY, 
-        					strength: 20, 
-        					triggerStrength: 10
+        					strength: 50, 
+        					triggerStrength: 20
         				}),
         				2
                     ]

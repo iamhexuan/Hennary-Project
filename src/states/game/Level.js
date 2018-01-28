@@ -52,7 +52,7 @@ export default class Level {
 		var tiles = [];
 		for(var i = 0; i < dimension[0]; i++){
 			for(var j = 0; j < dimension[1]; j++){
-				tiles.push(new Tile({ row: i, col: j, type: tileTypes.FLOOR, permeability: 0, id: 0 }));
+				tiles.push(new Tile({ row: i, col: j, type: tileTypes.FLOOR, permeability: 1, id: 0 }));
 			}
 		}
 
