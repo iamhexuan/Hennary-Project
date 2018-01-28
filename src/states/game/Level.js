@@ -87,7 +87,8 @@ export default class Level {
 		}
 
 		// loop all tiles
-		var a = new Tile();
+		var a = new Tile()
+				
 		a.updateTilesSignalStrength({
 			canvas:{rows:this.dimension[0], cols:this.dimension[1]},
 			tiles: this.tiles,
