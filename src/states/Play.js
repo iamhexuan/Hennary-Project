@@ -83,10 +83,9 @@ export default class Play extends Phaser.State {
 		
 		
 		let l = ls[0]
+		this.level = l;
 		
-		l.addCash(5)
-		console.log(l.cash)
-		
+		edge = 11
 		// TODO draw sprites
 		this.addImageGroup(l.tiles)
 		this.addImageGroup(l.humans);
@@ -106,13 +105,13 @@ export default class Play extends Phaser.State {
 				this.deviceText.push(null);
 			}
 			
-			img.setPosition(edge, i + offset);
+			img.setPosition(i + offset + 0.1, edge);
 			for (var j = 0; j < num; j++) {
 				deviceImgs.push(img);	
 			}
 			deviceImgsLocked.push(img);
 
-			var text = game.add.text(size * (img.row + 1), size * (img.col + 0.5), 'x ' + num, { font: "32px Arial", fill: "#ffffff", align: "left" });
+			var text = game.add.text(size * (img.col + 1), size * (img.row + 0.5), 'x ' + num, { font: "32px Arial", fill: "#ffffff", align: "left" });
 			this.deviceText.push(text)
 			//this.text.anchor.setTo(0.5, 0.5);
 		}
@@ -200,11 +199,12 @@ export default class Play extends Phaser.State {
 			}
 			text.setText('x ' + num)
 		}
-		return null;
+		
+		this.level.onDragStop(container);
 	}
 
 	updateCounter() {
-		// TODO call Level.timer()
+		this.level.timer();
 		this.counter++;
 		this.text.setText('Counter: ' + this.counter);
 	}
