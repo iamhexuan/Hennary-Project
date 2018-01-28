@@ -5,7 +5,7 @@ export default class LevelSelector {
     constructor({
         currentLevelNumber = 0,
         loadedLevels = [],
-        onSelectLevel = val => val,
+        onLevelSelect = val => val,
     } = {}){
         this.currentLevelNumber = currentLevelNumber
         this.loadedLevels = loadedLevels
@@ -13,7 +13,7 @@ export default class LevelSelector {
         this.LevelNumbersOnStage = []
         this.previousLevelNumberOutOfStage =  NaN
         this.nextLevelNumberOutOfStage =  NaN
-        this.onSelectLevel = onSelectLevel
+        this.onLevelSelect = onLevelSelect
     }
     
     //load image resources
@@ -163,7 +163,7 @@ export default class LevelSelector {
     
     handleCurrentLevelClick(ev){
         console.log('clicked', this, ev)
-        this.onSelectLevel(ev)
+        this.onLevelSelect(ev.data)
         // const event = new CustomEvent('level-select', ev)
     }
     

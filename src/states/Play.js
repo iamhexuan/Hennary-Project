@@ -73,17 +73,19 @@ export default class Play extends Phaser.State {
         	isLocked: false,
         }))
                 
-        console.log('levelSelector:', levelSelector)
+        
 		
 		levelSelector.drawLevelSelector({ 
             mainCanvas : {width: 1024, height: 768}, 
             levels: ls, 
             currentLevelNumber: 1
         })
+        
+		console.log('levelSelector:', levelSelector)
 		
-		levelSelector.onSelectLevel(ev => {
-    		console.log('onSelectLevel', ev)
-		})
+		levelSelector.onLevelSelect = ev => {
+    		console.log('onLevelSelect', ev)
+		}
 		
 		let l = ls[0]
 		this.level = l;
