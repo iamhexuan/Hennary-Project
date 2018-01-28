@@ -147,8 +147,8 @@ export default class Play extends Phaser.State {
     			img.setPosition(i + offset + 0.1, edge);
     			for (var j = 0; j < num; j++) {
 					console.log('img pos old', img.row, img.col)
-					img.col = (1024 - size*2)/size;
-					img.row = 1.2*(1.8+i);
+					img.col = (1018 - size*2)/size;
+					img.row = 1.25*(1.31+i);
 					console.log('img pos new', img.row, img.col)
     				deviceImgs.push(img);
     			}
