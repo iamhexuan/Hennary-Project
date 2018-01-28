@@ -45,20 +45,30 @@ export default class Level {
 	}
 	
 	isWon() {
-		this.cash >= this.goal
+		return this.cash >= this.goal
 	}
 	
 	isLost() {
-		this.cash <= 0
+		return this.cash < 0
 	}
 	
 	addCash(amount) {
 		this.cash += amount
-		console.log('add cash', amount, this.cash)
+		//console.log('add cash', amount, this.cash)
 	}
 	
 	timer() {
-		// TODO call timer() on each tile, human, etc.
+		if (this.isWon()) {
+			alert('You Won!');
+			location.reload();
+			return 0;
+		}
+		if (this.isLost()) {
+			alert('You Lost!');
+			location.reload();
+			return 0;
+		}
+		
 		// loop all humans
 		for (var i = 0; i < this.humans.length; i++) {
 			var human = this.humans[i];
@@ -77,7 +87,8 @@ export default class Level {
 		}
 
 		// loop all tiles
-		var a = new Tile();
+		var a = new Tile()
+				
 		a.updateTilesSignalStrength({
 			canvas:{rows:this.dimension[0], cols:this.dimension[1]},
 			tiles: this.tiles,

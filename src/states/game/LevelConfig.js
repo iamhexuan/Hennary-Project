@@ -3,9 +3,10 @@ import Device from "./Device"
 import Tile from "./Tile"
 
 export default class LevelConfig {
-	getConfig(levelNumber){
+	getConfig(level_number){
 		var config = {
 			1: {
+    			levelNumber: 1,
 				dimension: [10, 12],
 				walls:[
 					new Tile({ row: 1, col: 1, type: tileTypes.WALL, permeability: 0, id: 1 }),
@@ -109,18 +110,20 @@ export default class LevelConfig {
 				goal: 1000
 			},
 			2: {
+    			levelNumber: 2,
     			dimension: [10, 12],
 				walls:[
 					new Tile({ row: 1, col: 1, type: tileTypes.WALL, permeability: 0, id: 1 }),
                 ],
 			},
 			3: {
+    			levelNumber: 3,
     			dimension: [10, 12],
 				walls:[
 					new Tile({ row: 1, col: 1, type: tileTypes.WALL, permeability: 0, id: 1 }),
                 ],
 			}
 		};
-		return config[levelNumber]; 
+		return config[level_number]; 
 	}
 }

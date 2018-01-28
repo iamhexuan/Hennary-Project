@@ -82,14 +82,19 @@ export default class Play extends Phaser.State {
         	isLocked: false,
         }))
                 
-        console.log('levelSelector:', levelSelector)
+        
 		
 		levelSelector.drawLevelSelector({ 
             mainCanvas : {width: 1024, height: 768}, 
             levels: ls, 
             currentLevelNumber: 1
         })
+        
+		console.log('levelSelector:', levelSelector)
 		
+		levelSelector.onLevelSelect = ev => {
+    		console.log('onLevelSelect', ev)
+		}
 		
 		let l = ls[0]
 		this.level = l;
@@ -163,7 +168,7 @@ export default class Play extends Phaser.State {
     				console.log('item', item)
 					this.groupTop.removeAll();
 					group.add(item);
-					this.updateSignalStrength(item, container, this.dragFrom, this.deviceText);
+					this.updateSignalStrength(item, container, this.dragFrom, this.deviceText)
 				});
 			}
 		}

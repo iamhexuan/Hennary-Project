@@ -149,10 +149,15 @@ export default class Tile {
         const rows = !!canvas.rows ? canvas.rows : 0
         const cols = !!canvas.cols ? canvas.cols : 0
         
+        console.log('updateTilesSignalStrength init', arguments)
+        
         return new Promise((resolve, reject) => {
-            if (!tile_size || !rows || !cols) return
-            if (!Array.isArray(emitters) || emitters.length === 0) return
-            
+            if (!rows || !cols){
+                reject(new Error('uknown number of rows or cols.'))
+            }
+            if (!Array.isArray(emitters)){
+                reject(new Error('emitters are required to pass in as Array.'))
+            }
             let second_round_emitters = []
             
             let first_round_count = 0
@@ -174,7 +179,6 @@ export default class Tile {
                     }
                 })
             }
-            
             
             emitters.forEach((emitter, idx) => {
                 if (!!emitter.triggerStrength){
@@ -224,8 +228,10 @@ export default class Tile {
             console.log('%cupdatedTiles: ', 'background: blue;color:white;', updatedTiles)
             
             if (resolveSimplifiedObject){
+                console.log('resolve: ', updatedTileSingalStrength)
                 resolve(updatedTileSingalStrength)
             }else{
+                console.log('resolve: ', updatedTiles)
                 resolve(updatedTiles) 
             }
                            
