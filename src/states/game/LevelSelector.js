@@ -100,12 +100,12 @@ export default class LevelSelector {
         const mid_width = width / 2
         const mid_height = height / 2
         
-        const levels_obj = levels.reduce((acc, lvl) => {
+        const levels_obj = (Array.isArray(levels)) ? levels.reduce((acc, lvl) => {
             if (typeof lvl.levelNumber !== 'undefined'){
                 acc[lvl.levelNumber] = lvl
             }
             return acc
-        }, {})
+        }, {}) : {}
         
         const all_level_numbers = levels.map(lvl => lvl.levelNumber).filter(num => typeof num !== 'undefined').sort((a,b) => a-b)
         

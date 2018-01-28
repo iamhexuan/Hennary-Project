@@ -64,16 +64,22 @@ export default class Play extends Phaser.State {
 		
 
 		// TODO init level
-		var ls = [1,2,3].map(num => new Level({
-    		levelNumber: num,
-    		goal: 0, 
-            cash: 0,
-            thumbnailPath: '',
-            thumbnailSize: [500, 300],
-        	isLocked: false,
-        }))
-                
+		let ls_obj = [1,2,3].reduce((acc, num) => {
+            const lvl = new Level({
+        		levelNumber: num,
+        		goal: 0, 
+                cash: 0,
+                thumbnailPath: '',
+                thumbnailSize: [500, 300],
+            	isLocked: false,
+            })
+            acc[num] = lvl
+            return acc
+        },{})
+            
+        let ls = Object.values(ls_obj)    
         
+        this.level = ls[0]
 		
 		levelSelector.drawLevelSelector({ 
             mainCanvas : {width: 1024, height: 768}, 
@@ -85,46 +91,58 @@ export default class Play extends Phaser.State {
 		
 		levelSelector.onLevelSelect = ev => {
     		console.log('onLevelSelect', ev)
+    		const lvl_num = ev.levelNumber
+    		
+    		
+    		let l = ls_obj[lvl_num]
+    		
+    		console.log(l)
+    		
+    		this.level = l
+    		
+    		levelSelector.unloadAllLevelsOnStage()
+    		
+    		edge = 11
+    		// TODO draw sprites
+    		this.addImageGroup(l.tiles)
+    		this.addImageGroup(l.humans);
+    		
+    		// text
+    		this.deviceText = [];
+    		
+    		var deviceImgs = [];
+    		var deviceImgsLocked = [];
+    		var offset = 0;
+    		for (var i = 0; i < l.deviceStock.length; i++) {
+    			var img = l.deviceStock[i][0];
+    			var num = l.deviceStock[i][1];
+    			
+    			while (img.type > this.deviceText.length + 1) {
+    				offset ++;
+    				this.deviceText.push(null);
+    			}
+    			
+    			img.setPosition(i + offset + 0.1, edge);
+    			for (var j = 0; j < num; j++) {
+    				deviceImgs.push(img);	
+    			}
+    			deviceImgsLocked.push(img);
+    
+    			var text = game.add.text(size * (img.col + 1), size * (img.row + 0.5), 'x ' + num, { font: "32px Arial", fill: "#ffffff", align: "left" });
+    			this.deviceText.push(text)
+    			//this.text.anchor.setTo(0.5, 0.5);
+    		}
+    		this.addImageGroup(deviceImgsLocked);
+    		this.addImageGroup(deviceImgs, true);
+    		
+    		this.groupTop = game.add.group();
+    		game.world.bringToTop(this.groupTop);
+    		
+    		
+    		
 		}
 		
-		let l = ls[0]
-		this.level = l;
 		
-		edge = 11
-		// TODO draw sprites
-		this.addImageGroup(l.tiles)
-		this.addImageGroup(l.humans);
-		
-		// text
-		this.deviceText = [];
-		
-		var deviceImgs = [];
-		var deviceImgsLocked = [];
-		var offset = 0;
-		for (var i = 0; i < l.deviceStock.length; i++) {
-			var img = l.deviceStock[i][0];
-			var num = l.deviceStock[i][1];
-			
-			while (img.type > this.deviceText.length + 1) {
-				offset ++;
-				this.deviceText.push(null);
-			}
-			
-			img.setPosition(i + offset + 0.1, edge);
-			for (var j = 0; j < num; j++) {
-				deviceImgs.push(img);	
-			}
-			deviceImgsLocked.push(img);
-
-			var text = game.add.text(size * (img.col + 1), size * (img.row + 0.5), 'x ' + num, { font: "32px Arial", fill: "#ffffff", align: "left" });
-			this.deviceText.push(text)
-			//this.text.anchor.setTo(0.5, 0.5);
-		}
-		this.addImageGroup(deviceImgsLocked);
-		this.addImageGroup(deviceImgs, true);
-		
-		this.groupTop = game.add.group();
-		game.world.bringToTop(this.groupTop);
 	}
 	
 	addImageGroup(array, enableDrag = false, container = []) {

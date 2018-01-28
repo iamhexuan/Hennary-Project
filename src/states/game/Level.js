@@ -2,30 +2,32 @@ import LevelConfig from "./LevelConfig"
 import Tile from "./Tile"
 import Device from "./Device"
 
+const level_config = new LevelConfig()
+
 export default class Level {
 	constructor({
-    	levelNumber = 0, 
+    	levelNumber = 1, 
     	goal = 0, 
     	cash = 0,
     	thumbnailPath = '',
     	thumbnailSize = [500, 400],
     	isLocked = false,
     } = {}) {
-		let config = new LevelConfig().getConfig(levelNumber);
+		let config = level_config.getConfig(levelNumber)
 		this.levelNumber = levelNumber;
-		this.humans = config.humanStock;
-		this.tiles = this.getTiles(config.dimension, config.walls);
-		this.deviceStock = config.deviceStock;
+		this.humans = (!!config) ? config.humanStock : []
+		this.tiles = (!!config) ? this.getTiles(config.dimension, config.walls) : []
+		this.deviceStock = (!!config) ? config.deviceStock : []
 		this.emitters = [];
-		this.cash = config.cash;
-		this.goal = config.goal;
+		this.cash = (!!config) ? config.cash : 0
+		this.goal = (!!config) ? config.goal : 0
 		this.thumbnail = {
     		'path' : thumbnailPath,
     		'width' : thumbnailSize[0],
     		'height': thumbnailSize[1],
 		}
 		this.isLocked = isLocked
-		this.dimension = config.dimension
+		this.dimension = (!!config) ? config.dimension : [0,0]
 	}
 
 	getTiles(dimension, walls){
