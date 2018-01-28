@@ -63,7 +63,7 @@ export default class Play extends Phaser.State {
         
         tile.runTileTests()
         
-		game.stage.backgroundColor = '#ffffff';
+		game.stage.backgroundColor = '#f0f0f0';
 
 		this.text = game.add.text(game.world.centerX, game.world.centerY, 'Counter: 0', { font: "64px Arial", fill: "#ffffff", align: "center" });
 		this.text.anchor.setTo(0.5, 0.5);
@@ -117,10 +117,8 @@ export default class Play extends Phaser.State {
     		this.level.initCashSprite()
     		
     		levelSelector.unloadAllLevelsOnStage()
-    		
-    		edge = 11
+			
     		// TODO draw sprites
-
 			this.signals = []
 			this.addImageGroup(this.level.tiles, false, this.signals, 'wall_15.png');
 			
@@ -233,6 +231,16 @@ export default class Play extends Phaser.State {
 					break
 				}
 			}
+		}
+		
+		// check if on floor
+		var row = item.y / size;
+		var col = item.x / size;
+		var tile = this.level.tiles[row * this.level.dimension[1] + col]
+		console.log('on floor check', row, col, tile)
+		if (tile.type != tileTypes.FLOOR) {
+			item.x = item.init_x;
+			item.y = item.init_y;
 		}
 
 		var text = deviceText[type];
