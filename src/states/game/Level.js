@@ -41,6 +41,9 @@ export default class Level {
 		this.hud.add(this.moneyBar)
 
 		this.hud.create(0,0,'money_1.png');
+		
+		// init emotion
+		this.onDragStop([])
 	}
 
 	updateCashSprite(){
