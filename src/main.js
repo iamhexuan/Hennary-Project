@@ -23,5 +23,6 @@ global.tileTypes = {FLOOR:'floor', WALL:'wall', NA:'na'}
 global.personEmotions = {NEUTRAL:'neutral', HAPPY:'happy', UNHAPPY:'unhappy'}
 global.size = 75;
 global.edge = 8;
+global.maxAlpha = 0.8;
 
 window.game = new Game()
