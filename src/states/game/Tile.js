@@ -266,7 +266,7 @@ export default class Tile {
                     currentTilesSignalStrength[row][col] >= emitter.triggerStrength
                 )
                  
-                console.log('is triggerred: ', is_triggerred, (!!currentTilesSignalStrength && !!currentTilesSignalStrength[row]) ? !!currentTilesSignalStrength[row][col] : 'no current signal strength at: ', [row, col])                 
+               // console.log('is triggerred: ', is_triggerred, (!!currentTilesSignalStrength && !!currentTilesSignalStrength[row]) ? !!currentTilesSignalStrength[row][col] : 'no current signal strength at: ', [row, col])                 
                 if (is_triggerred){   
                                                  
                     // @return [ permeability * length ]
@@ -347,17 +347,20 @@ export default class Tile {
                     const tile_permeability = (!!_tile && typeof _tile.permeability !== 'undefined') ? _tile.permeability : 1
                     
                     if (tile_permeability === 1) break; // no need do extra calculation
+                    
+                    
                                                                                                                     
                     const col_bounds = [_col - 0.5, _col + 0.5]
                     
-                    const is_total_miss = (
+                    console.log('tile_permeability' ,tile_permeability, row_intercepts_at_cols, col_bounds)
+                    
+                    const is_complete_pass = (
                         col_bounds[1] < row_intercepts_at_cols[0] || 
                         col_bounds[1] > row_intercepts_at_cols[0]
                     )
                     
-                    if (is_total_miss) break; // no need do extra calculation 
                     
-                    const is_complete_pass = 
+                    const is_total_miss = 
                         (
                             col_bounds[0] <= row_intercepts_at_cols[0] && 
                             col_bounds[1] >= row_intercepts_at_cols[1]
@@ -366,10 +369,16 @@ export default class Tile {
                             col_bounds[1] <= row_intercepts_at_cols[1]
                         )
                         
+                    if (is_total_miss){
+                        console.log('miss ray pass', tile_permeability, 'at', [_row, _col])
+                        break; // no need do extra calculation 
+                    }
+                        
                     if (is_complete_pass){
                         console.log('complete ray pass', tile_permeability, 'at', [_row, _col])
                         _blockers_perm.push(tile_permeability)
                     }else{
+                        console.log('intercept pass', tile_permeability, 'at', [_row, _col])
                         let col_intercepts_at_rows = col_bounds
                             .map(_c => grad * _c + offset).sort((a,b) => a - b)
                             
