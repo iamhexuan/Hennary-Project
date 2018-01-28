@@ -338,7 +338,7 @@ export default class Tile {
                         console.warn(`'unable to get tile at position: row: ${_row}, col: ${_col}`)
                     }
                     
-                    const tile_permeability = (!_tile || typeof _tile.permeability !== 'undefined') ? _tile.permeability : 1
+                    const tile_permeability = (!!_tile && typeof _tile.permeability !== 'undefined') ? _tile.permeability : 1
                     
                     if (tile_permeability === 1) break; // no need do extra calculation
                                                                                                                     
