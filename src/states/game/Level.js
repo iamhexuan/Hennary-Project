@@ -1,5 +1,7 @@
 import LevelConfig from "./LevelConfig"
 import Tile from "./Tile"
+import Device from "./Device"
+
 export default class Level {
 	constructor({
     	levelNumber = 0, 
@@ -79,12 +81,18 @@ export default class Level {
 	
 	onDragStop(container) {
 		this.emitters = [];
+		var size = global.size;
+		
 		for (var i = 0; i < container.length; i++) {
 			var item = container[i];
+			console.log('emitter', i, item.data, item.x, item.y, item.init_x, item.init_y)
 			if (item.x != item.init_x || item.y != item.init_y) {
-				this.emitters.push(item.data);
+				var device = new Device(item.data);
+				device.setPosition(item.y/size, item.x/size);
+				this.emitters.push(device);
 			}
 		}
+		console.log('emitters', this.emitters)
 
 		// loop all tiles
 		var a = new Tile()
