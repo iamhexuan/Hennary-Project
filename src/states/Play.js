@@ -109,6 +109,8 @@ export default class Play extends Phaser.State {
     		
     		this.level = l
     		
+    		this.level.initCashSprite()
+    		
     		levelSelector.unloadAllLevelsOnStage()
     		
     		edge = 11
