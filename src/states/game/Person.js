@@ -37,9 +37,9 @@ export default class Person {
 
 	calculatingPay(){
        switch(this.emotion){
-       	case personEmotions.UNHAPPY: this.payAmount += 0;
+       	case personEmotions.UNHAPPY: this.payAmount -= 1;
        	break;
-       	case personEmotions.NEUTRAL: this.payAmount += 1;
+       	case personEmotions.NEUTRAL: this.payAmount += 0;
        	break;
        	case personEmotions.HAPPY:   this.payAmount += 2;
        	break;
