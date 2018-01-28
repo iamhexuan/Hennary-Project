@@ -2,32 +2,47 @@ import LevelConfig from "./LevelConfig"
 import Tile from "./Tile"
 import Device from "./Device"
 
-const level_config = new LevelConfig()
-
 export default class Level {
 	constructor({
-    	levelNumber = 1, 
+    	levelNumber = 0, 
     	goal = 0, 
     	cash = 0,
     	thumbnailPath = '',
     	thumbnailSize = [500, 400],
     	isLocked = false,
     } = {}) {
-		let config = level_config.getConfig(levelNumber)
+		let config = new LevelConfig().getConfig(levelNumber);
 		this.levelNumber = levelNumber;
-		this.humans = (!!config) ? config.humanStock : []
-		this.tiles = (!!config) ? this.getTiles(config.dimension, config.walls) : []
-		this.deviceStock = (!!config) ? config.deviceStock : []
+		this.humans = config.humanStock;
+		this.tiles = this.getTiles(config.dimension, config.walls);
+		this.deviceStock = config.deviceStock;
 		this.emitters = [];
-		this.cash = (!!config) ? config.cash : 0
-		this.goal = (!!config) ? config.goal : 0
+		this.cash = config.cash;
+		this.goal = config.goal;
 		this.thumbnail = {
     		'path' : thumbnailPath,
     		'width' : thumbnailSize[0],
     		'height': thumbnailSize[1],
 		}
 		this.isLocked = isLocked
-		this.dimension = (!!config) ? config.dimension : [0,0]
+		this.dimension = config.dimension
+		this.initCashSprite();
+	}
+
+
+	initCashSprite(){
+		this.hud = game.add.group();
+		this.hud.create(0,0,'money_3.png');
+
+		this.moneyBar = game.add.sprite(0,0,'money_2.png');
+		this.moneyBar.maxHeath = this.moneyBar.width;
+		this.hud.add(this.moneyBar)
+
+		this.hud.create(0,0,'money_1.png');
+	}
+
+	updateCashSprite() {
+		this.moneyBar.width = Math.random() * 100;
 	}
 
 	getTiles(dimension, walls){
@@ -59,7 +74,8 @@ export default class Level {
 	}
 	
 	addCash(amount) {
-		this.cash += amount
+		this.cash += amount;
+		this.updateCashSprite();
 		//console.log('add cash', amount, this.cash)
 	}
 	

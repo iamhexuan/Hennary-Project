@@ -152,6 +152,44 @@ export default class Play extends Phaser.State {
 		}
 		
 		
+<<<<<<< HEAD
+=======
+		edge = 11
+		// TODO draw sprites
+		this.addImageGroup(l.tiles)
+		this.addImageGroup(l.humans);
+		
+		// text
+		this.deviceText = [];
+		
+		var deviceImgs = [];
+		var deviceImgsLocked = [];
+		var offset = 0;
+		for (var i = 0; i < l.deviceStock.length; i++) {
+			var img = l.deviceStock[i][0];
+			var num = l.deviceStock[i][1];
+			
+			while (img.type > this.deviceText.length + 1) {
+				offset ++;
+				this.deviceText.push(null);
+			}
+			
+			img.setPosition(i + offset + 0.1, edge);
+			for (var j = 0; j < num; j++) {
+				deviceImgs.push(img);	
+			}
+			deviceImgsLocked.push(img);
+
+			var text = game.add.text(size * (img.col + 1), size * (img.row + 0.5), 'x ' + num, { font: "32px Arial", fill: "#ffffff", align: "left" });
+			this.deviceText.push(text)
+			//this.text.anchor.setTo(0.5, 0.5);
+		}
+		this.addImageGroup(deviceImgsLocked);
+		this.addImageGroup(deviceImgs, true);
+
+		this.groupTop = game.add.group();
+		game.world.bringToTop(this.groupTop);
+>>>>>>> 6876b3194032e50249bc0457b0ca619d5902d063
 	}
 
 	
