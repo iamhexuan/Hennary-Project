@@ -64,9 +64,9 @@ export default class Play extends Phaser.State {
 		this.counter = 0;
 		this.text = 0;
         
-        let tile = new Tile()
+       // let tile = new Tile()
         
-        tile.runTileTests()
+        //tile.runTileTests()
         
 		game.stage.backgroundColor = '#f0f0f0';
 
